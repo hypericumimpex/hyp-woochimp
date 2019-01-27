@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WooChimp\n"
-"POT-Creation-Date: 2016-10-15 09:34+0300\n"
+"POT-Creation-Date: 2016-12-28 23:14+0300\n"
 "PO-Revision-Date: 2015-10-14 16:52+0300\n"
 "Last-Translator: \n"
 "Language-Team: RightPress <info@rightpress.net>\n"
@@ -113,24 +113,48 @@ msgid ""
 "Renders MailChimp signup form. You can edit settings <a href=\"%s\">here</a>."
 msgstr ""
 
-#: ../includes/woochimp-mailchimp.class.php:162
-msgid "REQUEST: "
+#: ../includes/classes/woochimp-scheduler.class.php:70
+msgid "Once every five minutes"
 msgstr ""
 
-#: ../includes/woochimp-mailchimp.class.php:168
-msgid "RESPONSE"
+#: ../includes/classes/woochimp-scheduler.class.php:532 ../woochimp.php:2961
+msgid "Unable to proceed - order args was not created."
 msgstr ""
 
-#: ../includes/woochimp-mailchimp.class.php:168
-msgid "ERROR RECEIVED"
+#: ../includes/classes/woochimp-scheduler.class.php:536
+msgid "Sync started for order "
 msgstr ""
 
-#: ../includes/woochimp-mailchimp.class.php:565
-msgid "OLD LOG START"
+#: ../includes/classes/woochimp-scheduler.class.php:542
+msgid "Order exists."
 msgstr ""
 
-#: ../includes/woochimp-mailchimp.class.php:567
-msgid "OLD LOG END"
+#: ../includes/classes/woochimp-scheduler.class.php:542
+msgid "Order does not exist yet."
+msgstr ""
+
+#: ../includes/classes/woochimp-scheduler.class.php:548 ../woochimp.php:3074
+msgid "Order updated successfully."
+msgstr ""
+
+#: ../includes/classes/woochimp-scheduler.class.php:548
+msgid "Order created successfully."
+msgstr ""
+
+#: ../includes/classes/woochimp-scheduler.class.php:557
+msgid "Order data wasn't sent."
+msgstr ""
+
+#: ../includes/classes/woochimp-scheduler.class.php:571
+msgid "Order data sent successfully, but campaign id was omitted."
+msgstr ""
+
+#: ../includes/classes/woochimp-scheduler.class.php:579
+msgid "Order data wasn't sent even after omitting campaign id."
+msgstr ""
+
+#: ../includes/woochimp-mailchimp.class.php:166
+msgid "We received an unexpected error"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:12
@@ -168,7 +192,7 @@ msgid "General Settings"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:50
-#: ../includes/woochimp-plugin-structure.inc.php:309
+#: ../includes/woochimp-plugin-structure.inc.php:319
 msgid "If user is already subscribed"
 msgstr ""
 
@@ -185,7 +209,7 @@ msgid ""
 "<p>Default action to take if user is already subscribed to the list.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:66 ../woochimp.php:820
+#: ../includes/woochimp-plugin-structure.inc.php:66 ../woochimp.php:827
 msgid "Advanced"
 msgstr ""
 
@@ -252,8 +276,8 @@ msgid "MailChimp E-Commerce"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:131
-#: ../includes/woochimp-plugin-structure.inc.php:213
-#: ../includes/woochimp-plugin-structure.inc.php:372 ../woochimp.php:2068
+#: ../includes/woochimp-plugin-structure.inc.php:223
+#: ../includes/woochimp-plugin-structure.inc.php:362 ../woochimp.php:2063
 msgid "Settings"
 msgstr ""
 
@@ -268,595 +292,573 @@ msgid ""
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:144
-msgid "Update order status"
+msgid "Enable orders sync"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:151
 msgid ""
-"<p>Update order status in MailChimp when it is changed in WooCommerce.</p>"
+"<p>If enabled, order data will be sent to MailChimp every few minutes (5 "
+"orders at a time)</p>"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:154
-msgid "Delete cancelled order data"
+msgid "Update order status"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:161
 msgid ""
-"<p>Delete order data from MailChimp if order is cancelled or refunded.</p>"
+"<p>Update order status in MailChimp when it is changed in WooCommerce.</p>"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:164
-msgid "Subscribe all customers"
+msgid "Delete cancelled order data"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:171
+msgid ""
+"<p>Delete order data from MailChimp if order is cancelled or refunded.</p>"
+msgstr ""
+
+#: ../includes/woochimp-plugin-structure.inc.php:174
+msgid "Subscribe all customers"
+msgstr ""
+
+#: ../includes/woochimp-plugin-structure.inc.php:181
 msgid ""
 "<p>Subscribe all users automatically without asking for their permission "
 "whenever E-Commerce data is sent to MailChimp.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:176
+#: ../includes/woochimp-plugin-structure.inc.php:186
 msgid "Store"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:179
+#: ../includes/woochimp-plugin-structure.inc.php:189
 msgid "Store ID"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:186
+#: ../includes/woochimp-plugin-structure.inc.php:196
 msgid ""
 "<p>Default store ID is based on the URL of your site but you can change it "
 "to other value.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:189
+#: ../includes/woochimp-plugin-structure.inc.php:199
 msgid "Link Store to this list"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:197
+#: ../includes/woochimp-plugin-structure.inc.php:207
 msgid "<p>Select a MailChimp list that will be connected to store.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:204
+#: ../includes/woochimp-plugin-structure.inc.php:214
 msgid "Checkbox"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:208
+#: ../includes/woochimp-plugin-structure.inc.php:218
 msgid "Subscribe On Checkout - Checkbox"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:216
-#: ../includes/woochimp-plugin-structure.inc.php:375
+#: ../includes/woochimp-plugin-structure.inc.php:226
+#: ../includes/woochimp-plugin-structure.inc.php:365
 msgid "Subscribe on"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:224
-#: ../includes/woochimp-plugin-structure.inc.php:383
+#: ../includes/woochimp-plugin-structure.inc.php:234
+#: ../includes/woochimp-plugin-structure.inc.php:373
 msgid "Disabled"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:225
-#: ../includes/woochimp-plugin-structure.inc.php:384
+#: ../includes/woochimp-plugin-structure.inc.php:235
+#: ../includes/woochimp-plugin-structure.inc.php:374
 msgid "Order placed"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:226
-#: ../includes/woochimp-plugin-structure.inc.php:385
+#: ../includes/woochimp-plugin-structure.inc.php:236
+#: ../includes/woochimp-plugin-structure.inc.php:375
 msgid "Payment received"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:227
-#: ../includes/woochimp-plugin-structure.inc.php:386
+#: ../includes/woochimp-plugin-structure.inc.php:237
+#: ../includes/woochimp-plugin-structure.inc.php:376
 msgid "Order completed"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:229
-#: ../includes/woochimp-plugin-structure.inc.php:388
+#: ../includes/woochimp-plugin-structure.inc.php:239
+#: ../includes/woochimp-plugin-structure.inc.php:378
 msgid ""
 "<p>Choose whether to subscribe user as soon as order is placed (better for "
 "marketing) or wait until payment received or order is marked as completed "
 "(better for providing access to premium content delivered by email).</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:232
+#: ../includes/woochimp-plugin-structure.inc.php:242
 msgid "Label"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:234
+#: ../includes/woochimp-plugin-structure.inc.php:244
 msgid "Subscribe to our newsletter"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:239
+#: ../includes/woochimp-plugin-structure.inc.php:249
 msgid "<p>Text to display to customers next to signup checkbox.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:242
+#: ../includes/woochimp-plugin-structure.inc.php:252
 msgid "Checkbox position"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:250
+#: ../includes/woochimp-plugin-structure.inc.php:260
 msgid "Above customer details"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:251
+#: ../includes/woochimp-plugin-structure.inc.php:261
 msgid "Below customer details"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:252
+#: ../includes/woochimp-plugin-structure.inc.php:262
 msgid "Order review above submit"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:253
+#: ../includes/woochimp-plugin-structure.inc.php:263
 msgid "Order review below submit"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:254
+#: ../includes/woochimp-plugin-structure.inc.php:264
 msgid "Order review above total"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:255
+#: ../includes/woochimp-plugin-structure.inc.php:265
 msgid "Above billing details"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:256
+#: ../includes/woochimp-plugin-structure.inc.php:266
 msgid "Above shipping details"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:257
+#: ../includes/woochimp-plugin-structure.inc.php:267
 msgid "Below Checkout billing form"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:259
+#: ../includes/woochimp-plugin-structure.inc.php:269
 msgid ""
 "<p>Select checkbox position. Not all positions may be available on all "
 "themes and some may perform badly with some themes.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:262
+#: ../includes/woochimp-plugin-structure.inc.php:272
 msgid "Default state"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:270
+#: ../includes/woochimp-plugin-structure.inc.php:280
 msgid "Checked"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:271
+#: ../includes/woochimp-plugin-structure.inc.php:281
 msgid "Not checked"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:273
+#: ../includes/woochimp-plugin-structure.inc.php:283
 msgid ""
 "<p>Select default state of the signup checkbox.</p> <p>If you select "
 "<strong>Checked</strong>, customers will have to unselect the checkbox in "
 "order not to be subscribed to the list.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:276
+#: ../includes/woochimp-plugin-structure.inc.php:286
 msgid "Add to groups"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:285
+#: ../includes/woochimp-plugin-structure.inc.php:295
 msgid "Automatically"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:287
+#: ../includes/woochimp-plugin-structure.inc.php:297
 msgid "All groups selected below"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:291
+#: ../includes/woochimp-plugin-structure.inc.php:301
 msgid "Allow users to select (optional)"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:293
+#: ../includes/woochimp-plugin-structure.inc.php:303
 msgid "Checkbox group for each grouping"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:294
-#: ../includes/woochimp-plugin-structure.inc.php:301
+#: ../includes/woochimp-plugin-structure.inc.php:304
+#: ../includes/woochimp-plugin-structure.inc.php:311
 msgid "Radio button group for each grouping"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:295
-#: ../includes/woochimp-plugin-structure.inc.php:302
+#: ../includes/woochimp-plugin-structure.inc.php:305
+#: ../includes/woochimp-plugin-structure.inc.php:312
 msgid "Select field (dropdown) for each grouping"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:299
+#: ../includes/woochimp-plugin-structure.inc.php:309
 msgid "Require users to select (required)"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:306
+#: ../includes/woochimp-plugin-structure.inc.php:316
 msgid ""
 "<p>Select how you would like interest groups to work with this form - you "
 "can either add all selected interest groups to subscribers profile by "
 "default or allow your visitors to manually select some.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:317
+#: ../includes/woochimp-plugin-structure.inc.php:327
 msgid "Hide checkbox"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:318
+#: ../includes/woochimp-plugin-structure.inc.php:328
 msgid "Allow changing preference"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:319
+#: ../includes/woochimp-plugin-structure.inc.php:329
 msgid "Allow changing preference if groups are set"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:321
+#: ../includes/woochimp-plugin-structure.inc.php:331
 msgid "<p>Action to take if user is already subscribed to the list.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:324
-#: ../includes/woochimp-plugin-structure.inc.php:401
-#: ../includes/woochimp-plugin-structure.inc.php:457
-#: ../includes/woochimp-plugin-structure.inc.php:584
-msgid "Replace groups on MailChimp"
-msgstr ""
-
-#: ../includes/woochimp-plugin-structure.inc.php:331
-#: ../includes/woochimp-plugin-structure.inc.php:408
-#: ../includes/woochimp-plugin-structure.inc.php:464
-#: ../includes/woochimp-plugin-structure.inc.php:591
-msgid ""
-"<p>If selected, interest groups provided above will replace any other "
-"interest groups for existing users.</p> <p>Otherwise, provided groups will "
-"be merged with existing interest groups on subscriber profile.</p>"
-msgstr ""
-
 #: ../includes/woochimp-plugin-structure.inc.php:334
-#: ../includes/woochimp-plugin-structure.inc.php:411
-#: ../includes/woochimp-plugin-structure.inc.php:467
-#: ../includes/woochimp-plugin-structure.inc.php:594
-msgid "Double opt-in"
+#: ../includes/woochimp-plugin-structure.inc.php:391
+#: ../includes/woochimp-plugin-structure.inc.php:427
+#: ../includes/woochimp-plugin-structure.inc.php:534
+msgid "Double opt-in and welcome email"
 msgstr ""
 
 #: ../includes/woochimp-plugin-structure.inc.php:341
-#: ../includes/woochimp-plugin-structure.inc.php:418
-#: ../includes/woochimp-plugin-structure.inc.php:474
-#: ../includes/woochimp-plugin-structure.inc.php:601
+#: ../includes/woochimp-plugin-structure.inc.php:398
+#: ../includes/woochimp-plugin-structure.inc.php:434
+#: ../includes/woochimp-plugin-structure.inc.php:541
 msgid ""
-"<p>Enable standard MailChimp double opt-in functionality. Customers will be "
-"sent an email and required to confirm subscription.</p>"
+"<p>If enabled, customers will be subscribed with 'pending' status, and "
+"confirmation email will be sent to confirm subscription. Customers will also "
+"receive welcome email as configured in MailChimp settings.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:344
-#: ../includes/woochimp-plugin-structure.inc.php:421
-#: ../includes/woochimp-plugin-structure.inc.php:477
-#: ../includes/woochimp-plugin-structure.inc.php:604
-msgid "Send welcome email"
-msgstr ""
-
-#: ../includes/woochimp-plugin-structure.inc.php:351
-#: ../includes/woochimp-plugin-structure.inc.php:428
-#: ../includes/woochimp-plugin-structure.inc.php:484
-#: ../includes/woochimp-plugin-structure.inc.php:611
-msgid ""
-"<p>If enabled, customers will receive welcome email as configured in "
-"MailChimp settings.</p>"
-msgstr ""
-
-#: ../includes/woochimp-plugin-structure.inc.php:356
-#: ../includes/woochimp-plugin-structure.inc.php:433
+#: ../includes/woochimp-plugin-structure.inc.php:346
+#: ../includes/woochimp-plugin-structure.inc.php:403
 msgid "Lists, Groups And Fields"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:363
+#: ../includes/woochimp-plugin-structure.inc.php:353
 msgid "Automatic"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:367
+#: ../includes/woochimp-plugin-structure.inc.php:357
 msgid "Subscribe On Checkout - Automatic"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:391
+#: ../includes/woochimp-plugin-structure.inc.php:381
 msgid "Don't resubscribe unsubscribed"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:398
+#: ../includes/woochimp-plugin-structure.inc.php:388
 msgid ""
 "<p>If selected, users who have unsubscribed from the selected list in the "
 "past, will not be automatically subscribed again.</p> <p>This requires "
 "MailChimp Webhook integration to be active.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:440
+#: ../includes/woochimp-plugin-structure.inc.php:410
 msgid "Widget"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:444
+#: ../includes/woochimp-plugin-structure.inc.php:414
 msgid "Signup Form Widget"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:447
-#: ../includes/woochimp-plugin-structure.inc.php:574
+#: ../includes/woochimp-plugin-structure.inc.php:417
+#: ../includes/woochimp-plugin-structure.inc.php:524
 msgid "Enable"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:454
+#: ../includes/woochimp-plugin-structure.inc.php:424
 msgid ""
 "<p>If enabled, a signup form will be displayed in a widget.</p> <p>You still "
 "must insert <strong>MailChimp Signup</strong> widget to one of the sidebars."
 "</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:489
-#: ../includes/woochimp-plugin-structure.inc.php:616
+#: ../includes/woochimp-plugin-structure.inc.php:439
+#: ../includes/woochimp-plugin-structure.inc.php:546
 msgid "List & Groups"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:492
-#: ../includes/woochimp-plugin-structure.inc.php:619 ../woochimp.php:863
+#: ../includes/woochimp-plugin-structure.inc.php:442
+#: ../includes/woochimp-plugin-structure.inc.php:549 ../woochimp.php:870
 msgid "Mailing list"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:500
-#: ../includes/woochimp-plugin-structure.inc.php:627
+#: ../includes/woochimp-plugin-structure.inc.php:450
+#: ../includes/woochimp-plugin-structure.inc.php:557
 msgid ""
 "<p>Select a MailChimp list to subscribe users to. You must choose a valid "
 "list to enable this feature.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:503
-#: ../includes/woochimp-plugin-structure.inc.php:630 ../woochimp.php:864
+#: ../includes/woochimp-plugin-structure.inc.php:453
+#: ../includes/woochimp-plugin-structure.inc.php:560 ../woochimp.php:871
 msgid "Groups"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:511
-#: ../includes/woochimp-plugin-structure.inc.php:638
+#: ../includes/woochimp-plugin-structure.inc.php:461
+#: ../includes/woochimp-plugin-structure.inc.php:568
 msgid ""
 "<p>Select one or multiple MailChimp groups to add subscribers to. Mailing "
 "list must be chosen for a list of groups to appear.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:516
-#: ../includes/woochimp-plugin-structure.inc.php:643
+#: ../includes/woochimp-plugin-structure.inc.php:466
+#: ../includes/woochimp-plugin-structure.inc.php:573
 msgid "Fields"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:521
-#: ../includes/woochimp-plugin-structure.inc.php:648
+#: ../includes/woochimp-plugin-structure.inc.php:471
+#: ../includes/woochimp-plugin-structure.inc.php:578
 msgid "Style"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:524
-#: ../includes/woochimp-plugin-structure.inc.php:651
+#: ../includes/woochimp-plugin-structure.inc.php:474
+#: ../includes/woochimp-plugin-structure.inc.php:581
 msgid "Show field labels inline"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:531
-#: ../includes/woochimp-plugin-structure.inc.php:658
+#: ../includes/woochimp-plugin-structure.inc.php:481
+#: ../includes/woochimp-plugin-structure.inc.php:588
 msgid ""
 "<p>If enabled, field labels will be shown as placeholders for fields. "
 "Otherwise, they will be displayed separately before fields.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:534
-#: ../includes/woochimp-plugin-structure.inc.php:661
+#: ../includes/woochimp-plugin-structure.inc.php:484
+#: ../includes/woochimp-plugin-structure.inc.php:591
 msgid "Signup form style"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:542
+#: ../includes/woochimp-plugin-structure.inc.php:492
 msgid "Inherit theme style"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:543
+#: ../includes/woochimp-plugin-structure.inc.php:493
 msgid "WooChimp General"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:545
-#: ../includes/woochimp-plugin-structure.inc.php:672
+#: ../includes/woochimp-plugin-structure.inc.php:495
+#: ../includes/woochimp-plugin-structure.inc.php:602
 msgid ""
 "<p>Select a style to apply to your signup form. If you choose to inherit the "
 "style from your current theme, styling will completely depend on it - in "
 "some cases you may get undesired results.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:548
-#: ../includes/woochimp-plugin-structure.inc.php:675
+#: ../includes/woochimp-plugin-structure.inc.php:498
+#: ../includes/woochimp-plugin-structure.inc.php:605
 msgid "Custom CSS"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:555
+#: ../includes/woochimp-plugin-structure.inc.php:505
 msgid ""
 "<p>You can further customize the appearance of the signup form by adding "
 "custom CSS to this field.</p> <p>To make changes to the style, simply use "
 "CSS class <strong>woochimp_wg</strong> as a basis.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:560
-#: ../includes/woochimp-plugin-structure.inc.php:687
+#: ../includes/woochimp-plugin-structure.inc.php:510
+#: ../includes/woochimp-plugin-structure.inc.php:617
 msgid "Usage"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:567
+#: ../includes/woochimp-plugin-structure.inc.php:517
 msgid "Shortcode"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:571
+#: ../includes/woochimp-plugin-structure.inc.php:521
 msgid "Signup Shortcode"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:581
+#: ../includes/woochimp-plugin-structure.inc.php:531
 msgid ""
 "<p>If enabled, a signup form will be displayed wherever you place a "
 "shortcode.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:682
+#: ../includes/woochimp-plugin-structure.inc.php:612
 msgid ""
 "You can further customize the appearance of the signup form by adding custom "
 "CSS to this field.</p> <p>To make changes to the style, simply use CSS class "
 "<strong>woochimp_sc</strong> as a basis.</p>"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:694
+#: ../includes/woochimp-plugin-structure.inc.php:624
 msgid "Labels"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:698
+#: ../includes/woochimp-plugin-structure.inc.php:628
 msgid "Frontend forms"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:701
+#: ../includes/woochimp-plugin-structure.inc.php:631
 msgid "Widget form title"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:703
+#: ../includes/woochimp-plugin-structure.inc.php:633
 msgid "Newsletter"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:710
+#: ../includes/woochimp-plugin-structure.inc.php:640
 msgid "Shortcode form title"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:712
+#: ../includes/woochimp-plugin-structure.inc.php:642
 msgid "Sign up for our newsletter!"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:719
+#: ../includes/woochimp-plugin-structure.inc.php:649
 msgid "Button label"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:721
+#: ../includes/woochimp-plugin-structure.inc.php:651
 msgid "Sign up"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:728
-#: ../includes/woochimp-plugin-structure.inc.php:730
+#: ../includes/woochimp-plugin-structure.inc.php:658
+#: ../includes/woochimp-plugin-structure.inc.php:660
 msgid "Email"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:737
+#: ../includes/woochimp-plugin-structure.inc.php:667
 msgid "Error"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:739
+#: ../includes/woochimp-plugin-structure.inc.php:669
 msgid "Something went wrong. Please try again."
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:746
+#: ../includes/woochimp-plugin-structure.inc.php:676
 msgid "Already Subscribed"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:748
+#: ../includes/woochimp-plugin-structure.inc.php:678
 msgid "Sorry, you are already subscribed to this list."
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:755
+#: ../includes/woochimp-plugin-structure.inc.php:685
 msgid "Success"
 msgstr ""
 
-#: ../includes/woochimp-plugin-structure.inc.php:757
+#: ../includes/woochimp-plugin-structure.inc.php:687
 msgid "Thank you for signing up!"
 msgstr ""
 
-#: ../woochimp.php:179
+#: ../woochimp.php:194
 msgid "Billing First Name"
 msgstr ""
 
-#: ../woochimp.php:180
+#: ../woochimp.php:195
 msgid "Billing Last Name"
 msgstr ""
 
-#: ../woochimp.php:181
+#: ../woochimp.php:196
 msgid "Billing Company"
 msgstr ""
 
-#: ../woochimp.php:182
+#: ../woochimp.php:197
 msgid "Billing Address 1"
 msgstr ""
 
-#: ../woochimp.php:183
+#: ../woochimp.php:198
 msgid "Billing Address 2"
 msgstr ""
 
-#: ../woochimp.php:184
+#: ../woochimp.php:199
 msgid "Billing City"
 msgstr ""
 
-#: ../woochimp.php:185
+#: ../woochimp.php:200
 msgid "Billing State"
 msgstr ""
 
-#: ../woochimp.php:186
+#: ../woochimp.php:201
 msgid "Billing Postcode"
 msgstr ""
 
-#: ../woochimp.php:187
+#: ../woochimp.php:202
 msgid "Billing Country"
 msgstr ""
 
-#: ../woochimp.php:188
+#: ../woochimp.php:203
 msgid "Billing Phone"
 msgstr ""
 
-#: ../woochimp.php:189
+#: ../woochimp.php:204
 msgid "Shipping First Name"
 msgstr ""
 
-#: ../woochimp.php:190
+#: ../woochimp.php:205
 msgid "Shipping Last Name"
 msgstr ""
 
-#: ../woochimp.php:191
+#: ../woochimp.php:206
 msgid "Shipping Address 1"
 msgstr ""
 
-#: ../woochimp.php:192
+#: ../woochimp.php:207
 msgid "Shipping Address 2"
 msgstr ""
 
-#: ../woochimp.php:193
+#: ../woochimp.php:208
 msgid "Shipping City"
 msgstr ""
 
-#: ../woochimp.php:194
+#: ../woochimp.php:209
 msgid "Shipping State"
 msgstr ""
 
-#: ../woochimp.php:195
+#: ../woochimp.php:210
 msgid "Shipping Postcode"
 msgstr ""
 
-#: ../woochimp.php:196
+#: ../woochimp.php:211
 msgid "Shipping Country"
 msgstr ""
 
-#: ../woochimp.php:197
+#: ../woochimp.php:212
 msgid "Shipping Method Title"
 msgstr ""
 
-#: ../woochimp.php:198
+#: ../woochimp.php:213
 msgid "Payment Method Title "
 msgstr ""
 
-#: ../woochimp.php:199
+#: ../woochimp.php:214
 msgid "User ID"
 msgstr ""
 
-#: ../woochimp.php:200
+#: ../woochimp.php:215
 msgid "User First Name"
 msgstr ""
 
-#: ../woochimp.php:201
+#: ../woochimp.php:216
 msgid "User Last Name"
 msgstr ""
 
-#: ../woochimp.php:202
+#: ../woochimp.php:217
 msgid "User Nickname"
 msgstr ""
 
-#: ../woochimp.php:203
+#: ../woochimp.php:218
 msgid "User Is Paying Customer"
 msgstr ""
 
-#: ../woochimp.php:204
+#: ../woochimp.php:219
 msgid "User Completed Order Count"
 msgstr ""
 
-#: ../woochimp.php:555
+#: ../woochimp.php:562
 #, php-format
 msgid ""
 "Warning: PHP cURL extension is not enabled on this server. cURL is required "
@@ -864,191 +866,191 @@ msgid ""
 "\"%s\">here</a>."
 msgstr ""
 
-#: ../woochimp.php:737 ../woochimp.php:857 ../woochimp.php:904
-#: ../woochimp.php:918 ../woochimp.php:1093 ../woochimp.php:1099
-#: ../woochimp.php:1326 ../woochimp.php:1330
+#: ../woochimp.php:744 ../woochimp.php:864 ../woochimp.php:911
+#: ../woochimp.php:925 ../woochimp.php:1100 ../woochimp.php:1106
+#: ../woochimp.php:1333 ../woochimp.php:1337
 msgid "Connecting to MailChimp..."
 msgstr ""
 
-#: ../woochimp.php:742
+#: ../woochimp.php:749
 msgid "To activate a signup widget:"
 msgstr ""
 
-#: ../woochimp.php:744
+#: ../woochimp.php:751
 #, php-format
 msgid "go to <a href=\"%s\">Widgets</a> page"
 msgstr ""
 
-#: ../woochimp.php:745
+#: ../woochimp.php:752
 msgid "locate a widget named MailChimp Signup"
 msgstr ""
 
-#: ../woochimp.php:746
+#: ../woochimp.php:753
 msgid "drag and drop it to the sidebar of your choise"
 msgstr ""
 
-#: ../woochimp.php:750
+#: ../woochimp.php:757
 msgid ""
 "Widget will not be displayed to customers if it is not enabled here or if "
 "the are issues with configuration."
 msgstr ""
 
-#: ../woochimp.php:753
+#: ../woochimp.php:760
 msgid ""
 "To avoid potential conflicts, we recommend to use at most one MailChimp "
 "Signup widget per page."
 msgstr ""
 
-#: ../woochimp.php:761
+#: ../woochimp.php:768
 msgid ""
 "You can display a signup form anywhere in your pages, posts and WooCommerce "
 "product descriptions."
 msgstr ""
 
-#: ../woochimp.php:762
+#: ../woochimp.php:769
 msgid ""
 "To do this, simply insert the following shortcode to the desired location:"
 msgstr ""
 
-#: ../woochimp.php:765
+#: ../woochimp.php:772
 msgid ""
 "Shorcode will not be displayed to customers if it is not enabled here or if "
 "there are issues with configuration."
 msgstr ""
 
-#: ../woochimp.php:768
+#: ../woochimp.php:775
 msgid ""
 "To avoid potential conflicts, we recommend to place at most one shortcode "
 "per page."
 msgstr ""
 
-#: ../woochimp.php:816
+#: ../woochimp.php:823
 msgid "Billing Fields"
 msgstr ""
 
-#: ../woochimp.php:817
+#: ../woochimp.php:824
 msgid "Shipping Fields"
 msgstr ""
 
-#: ../woochimp.php:818
+#: ../woochimp.php:825
 msgid "Order Properties"
 msgstr ""
 
-#: ../woochimp.php:819
+#: ../woochimp.php:826
 msgid "User Properties"
 msgstr ""
 
-#: ../woochimp.php:825
+#: ../woochimp.php:832
 msgid "Enter Order Field Key"
 msgstr ""
 
-#: ../woochimp.php:826
+#: ../woochimp.php:833
 msgid "Enter User Meta Key"
 msgstr ""
 
-#: ../woochimp.php:827
+#: ../woochimp.php:834
 msgid "Enter Static Value"
 msgstr ""
 
-#: ../woochimp.php:849
+#: ../woochimp.php:856
 msgid "No results match"
 msgstr ""
 
-#: ../woochimp.php:850
+#: ../woochimp.php:857
 msgid "Select a mailing list"
 msgstr ""
 
-#: ../woochimp.php:851
+#: ../woochimp.php:858
 msgid "Select a tag"
 msgstr ""
 
-#: ../woochimp.php:852
+#: ../woochimp.php:859
 msgid "Select a checkout field"
 msgstr ""
 
-#: ../woochimp.php:853
+#: ../woochimp.php:860
 msgid "Select some groups (optional)"
 msgstr ""
 
-#: ../woochimp.php:854
+#: ../woochimp.php:861
 msgid "Select some products"
 msgstr ""
 
-#: ../woochimp.php:855
+#: ../woochimp.php:862
 msgid "Select some roles"
 msgstr ""
 
-#: ../woochimp.php:856
+#: ../woochimp.php:863
 msgid "Select some categories"
 msgstr ""
 
-#: ../woochimp.php:858 ../woochimp.php:1255
+#: ../woochimp.php:865 ../woochimp.php:1262
 msgid "Still connecting to MailChimp..."
 msgstr ""
 
-#: ../woochimp.php:859
+#: ../woochimp.php:866
 msgid "Field Name"
 msgstr ""
 
-#: ../woochimp.php:860
+#: ../woochimp.php:867
 msgid "MailChimp Tag"
 msgstr ""
 
-#: ../woochimp.php:861
+#: ../woochimp.php:868
 msgid "Add Field"
 msgstr ""
 
-#: ../woochimp.php:862 ../woochimp.php:1255
+#: ../woochimp.php:869 ../woochimp.php:1262
 msgid "Add Set"
 msgstr ""
 
-#: ../woochimp.php:865 ../woochimp.php:1087
+#: ../woochimp.php:872 ../woochimp.php:1094
 msgid "Set #"
 msgstr ""
 
-#: ../woochimp.php:866
+#: ../woochimp.php:873
 msgid "Custom Order Field"
 msgstr ""
 
-#: ../woochimp.php:867
+#: ../woochimp.php:874
 msgid "Custom User Field"
 msgstr ""
 
-#: ../woochimp.php:868
+#: ../woochimp.php:875
 msgid "Static Value"
 msgstr ""
 
-#: ../woochimp.php:870
+#: ../woochimp.php:877
 #, php-format
 msgid ""
 "%s Response received from your server is <a href=\"%s\" target=\"_blank"
 "\">malformed</a>."
 msgstr ""
 
-#: ../woochimp.php:871
+#: ../woochimp.php:878
 msgid "View Log"
 msgstr ""
 
-#: ../woochimp.php:903 ../woochimp.php:917
+#: ../woochimp.php:910 ../woochimp.php:924
 #, php-format
 msgid ""
 "Email address field is always displayed. You may wish to set up additional "
 "fields and associate them with MailChimp <a href=\"%s\">merge tags</a>."
 msgstr ""
 
-#: ../woochimp.php:927
+#: ../woochimp.php:934
 msgid ""
 "Use this if you wish to add a checkbox to your Checkout page so users can "
 "opt-in to receive your newsletters."
 msgstr ""
 
-#: ../woochimp.php:936
+#: ../woochimp.php:943
 msgid ""
 "Use this if you wish to subscribe all customers to one of your lists without "
 "asking for their consent."
 msgstr ""
 
-#: ../woochimp.php:945
+#: ../woochimp.php:952
 #, php-format
 msgid ""
 "<a href=\"%s\">MailChimp E-Commerce</a> syncs order data with MailChimp and "
@@ -1057,7 +1059,7 @@ msgid ""
 "or order is marked completed."
 msgstr ""
 
-#: ../woochimp.php:952
+#: ../woochimp.php:959
 msgid ""
 "MailChimp E-Commerce functionality requires a Store to be configured. Store "
 "must have a unique ID and must be tied to a specific MailChimp list. All "
@@ -1067,35 +1069,35 @@ msgid ""
 "net/mailchimp-ecommerce-api\">here</a>."
 msgstr ""
 
-#: ../woochimp.php:1029
+#: ../woochimp.php:1036
 msgid "No condition"
 msgstr ""
 
-#: ../woochimp.php:1030
+#: ../woochimp.php:1037
 msgid "Products in cart"
 msgstr ""
 
-#: ../woochimp.php:1031
+#: ../woochimp.php:1038
 msgid "Product variations in cart"
 msgstr ""
 
-#: ../woochimp.php:1032
+#: ../woochimp.php:1039
 msgid "Product categories in cart"
 msgstr ""
 
-#: ../woochimp.php:1033 ../woochimp.php:1202
+#: ../woochimp.php:1040 ../woochimp.php:1209
 msgid "Order total"
 msgstr ""
 
-#: ../woochimp.php:1034 ../woochimp.php:1229
+#: ../woochimp.php:1041 ../woochimp.php:1236
 msgid "Custom field value"
 msgstr ""
 
-#: ../woochimp.php:1035 ../woochimp.php:1233
+#: ../woochimp.php:1042 ../woochimp.php:1240
 msgid "Customer roles"
 msgstr ""
 
-#: ../woochimp.php:1081
+#: ../woochimp.php:1088
 msgid ""
 "Select mailing list and groups that customers will be added to. Multiple "
 "sets of list and groups with conditional selection are supported. If "
@@ -1103,134 +1105,134 @@ msgid ""
 "times to multiple lists."
 msgstr ""
 
-#: ../woochimp.php:1087
+#: ../woochimp.php:1094
 msgid "Remove"
 msgstr ""
 
-#: ../woochimp.php:1105
+#: ../woochimp.php:1112
 msgid "Condition"
 msgstr ""
 
-#: ../woochimp.php:1118 ../woochimp.php:1126 ../woochimp.php:1134
-#: ../woochimp.php:1142 ../woochimp.php:1153 ../woochimp.php:1210
+#: ../woochimp.php:1125 ../woochimp.php:1133 ../woochimp.php:1141
+#: ../woochimp.php:1149 ../woochimp.php:1160 ../woochimp.php:1217
 msgid "Operator"
 msgstr ""
 
-#: ../woochimp.php:1121 ../woochimp.php:1129 ../woochimp.php:1137
-#: ../woochimp.php:1216
+#: ../woochimp.php:1128 ../woochimp.php:1136 ../woochimp.php:1144
+#: ../woochimp.php:1223
 msgid "Contains"
 msgstr ""
 
-#: ../woochimp.php:1122 ../woochimp.php:1130 ../woochimp.php:1138
-#: ../woochimp.php:1217
+#: ../woochimp.php:1129 ../woochimp.php:1137 ../woochimp.php:1145
+#: ../woochimp.php:1224
 msgid "Does not contain"
 msgstr ""
 
-#: ../woochimp.php:1145 ../woochimp.php:1220
+#: ../woochimp.php:1152 ../woochimp.php:1227
 msgid "Less than"
 msgstr ""
 
-#: ../woochimp.php:1146 ../woochimp.php:1221
+#: ../woochimp.php:1153 ../woochimp.php:1228
 msgid "Less than or equal to"
 msgstr ""
 
-#: ../woochimp.php:1147 ../woochimp.php:1222
+#: ../woochimp.php:1154 ../woochimp.php:1229
 msgid "Equal to"
 msgstr ""
 
-#: ../woochimp.php:1148 ../woochimp.php:1223
+#: ../woochimp.php:1155 ../woochimp.php:1230
 msgid "Greater than or equal to"
 msgstr ""
 
-#: ../woochimp.php:1149 ../woochimp.php:1224
+#: ../woochimp.php:1156 ../woochimp.php:1231
 msgid "Greater than"
 msgstr ""
 
-#: ../woochimp.php:1156 ../woochimp.php:1214
+#: ../woochimp.php:1163 ../woochimp.php:1221
 msgid "Is"
 msgstr ""
 
-#: ../woochimp.php:1157 ../woochimp.php:1215
+#: ../woochimp.php:1164 ../woochimp.php:1222
 msgid "Is not"
 msgstr ""
 
-#: ../woochimp.php:1161
+#: ../woochimp.php:1168
 msgid "Products"
 msgstr ""
 
-#: ../woochimp.php:1175
+#: ../woochimp.php:1182
 msgid "Variations"
 msgstr ""
 
-#: ../woochimp.php:1189
+#: ../woochimp.php:1196
 msgid "Product categories"
 msgstr ""
 
-#: ../woochimp.php:1206
+#: ../woochimp.php:1213
 msgid "Custom field key"
 msgstr ""
 
-#: ../woochimp.php:1892
+#: ../woochimp.php:1887
 msgid "Your settings have been saved."
 msgstr ""
 
-#: ../woochimp.php:1898
+#: ../woochimp.php:1893
 msgid "must be numeric"
 msgstr ""
 
-#: ../woochimp.php:1899
+#: ../woochimp.php:1894
 msgid "must be either 0 or 1"
 msgstr ""
 
-#: ../woochimp.php:1900
+#: ../woochimp.php:1895
 msgid "is not allowed"
 msgstr ""
 
-#: ../woochimp.php:1901
+#: ../woochimp.php:1896
 msgid "is not a valid email address"
 msgstr ""
 
-#: ../woochimp.php:1902
+#: ../woochimp.php:1897
 msgid "is not a valid URL"
 msgstr ""
 
-#: ../woochimp.php:1903
+#: ../woochimp.php:1898
 msgid "is not a valid text string"
 msgstr ""
 
-#: ../woochimp.php:1909
+#: ../woochimp.php:1904
 msgid "Reverted to a previous state."
 msgstr ""
 
-#: ../woochimp.php:1914
+#: ../woochimp.php:1909
 msgid "Value of"
 msgstr ""
 
-#: ../woochimp.php:2066
+#: ../woochimp.php:2061
 msgid "Support"
 msgstr ""
 
-#: ../woochimp.php:2113
+#: ../woochimp.php:2108
 msgid "Unable to load lists"
 msgstr ""
 
-#: ../woochimp.php:2119
+#: ../woochimp.php:2114
 msgid "No lists found"
 msgstr ""
 
-#: ../woochimp.php:2151 ../woochimp.php:2191
+#: ../woochimp.php:2147 ../woochimp.php:2188
 msgid "Unable to load groups"
 msgstr ""
 
-#: ../woochimp.php:2210
+#: ../woochimp.php:2207
 msgid "No groups found"
 msgstr ""
 
-#: ../woochimp.php:2291
+#: ../woochimp.php:2290
 msgid "Unable to load merge fields"
 msgstr ""
 
-#: ../woochimp.php:2301
+#: ../woochimp.php:2300
 msgid "No merge fields found"
 msgstr ""
 
@@ -1242,206 +1244,381 @@ msgstr ""
 msgid "PHP Curl extension not loaded on your server"
 msgstr ""
 
-#: ../woochimp.php:2351
+#: ../woochimp.php:2348
 msgid "Unable to initialize MailChimp class"
 msgstr ""
 
-#: ../woochimp.php:2366
+#: ../woochimp.php:2363
 msgid "Something went wrong..."
 msgstr ""
 
-#: ../woochimp.php:2430
+#: ../woochimp.php:2425
 msgid "Integration not enabled or API key not set"
 msgstr ""
 
-#: ../woochimp.php:2435
+#: ../woochimp.php:2430
 msgid "Successfully connected to MailChimp account"
 msgstr ""
 
-#: ../woochimp.php:2438
+#: ../woochimp.php:2433
 msgid "Connection to MailChimp failed."
 msgstr ""
 
-#: ../woochimp.php:2442
+#: ../woochimp.php:2438
 msgid "Reason"
 msgstr ""
 
-#: ../woochimp.php:2729
+#: ../woochimp.php:2638
+#, php-format
+msgid "Product %s product does not exist, creating new..."
+msgstr ""
+
+#: ../woochimp.php:2661
+#, php-format
+msgid "Variation %s of product %s does not exist, creating..."
+msgstr ""
+
+#: ../woochimp.php:2748
+msgid "Getting the Store..."
+msgstr ""
+
+#: ../woochimp.php:2751
 msgid "No list selected for Store."
 msgstr ""
 
-#: ../woochimp.php:4315
+#: ../woochimp.php:2771
+#, php-format
+msgid "Store %s was found."
+msgstr ""
+
+#: ../woochimp.php:2780
+msgid "Store was not found, creating new..."
+msgstr ""
+
+#: ../woochimp.php:2795
+msgid "Store created."
+msgstr ""
+
+#: ../woochimp.php:2898
+msgid "Order placed process launched for order id: "
+msgstr ""
+
+#: ../woochimp.php:2928
+msgid "Order completed process launched for order id: "
+msgstr ""
+
+#: ../woochimp.php:2939
+msgid "Subscription on payment active, but order is not paid, stopping."
+msgstr ""
+
+#: ../woochimp.php:2951
+msgid "Ecommerce data sending deactivated or data was already sent, stopping."
+msgstr ""
+
+#: ../woochimp.php:2966
+#, php-format
+msgid "Order %s already exists in Store %s, stopping."
+msgstr ""
+
+#: ../woochimp.php:2975
+msgid "Ecommerce data sent successfully."
+msgstr ""
+
+#: ../woochimp.php:2980
+msgid "Ecommerce data wasn't sent."
+msgstr ""
+
+#: ../woochimp.php:2994
+msgid "Ecommerce data sent successfully, but campaign id was omitted."
+msgstr ""
+
+#: ../woochimp.php:2998
+msgid "Ecommerce data wasn't sent even after omitting campaign id."
+msgstr ""
+
+#: ../woochimp.php:3026
+msgid "Order status update process launched for order id: "
+msgstr ""
+
+#: ../woochimp.php:3033
+msgid "No order and no status found, stopping."
+msgstr ""
+
+#: ../woochimp.php:3067 ../woochimp.php:3119
+#, php-format
+msgid "Order %s does not exist in Store %s, stopping."
+msgstr ""
+
+#: ../woochimp.php:3098
+msgid "Order cancel process launched for order id: "
+msgstr ""
+
+#: ../woochimp.php:3126
+msgid "Order deleted successfully."
+msgstr ""
+
+#: ../woochimp.php:3245
+msgid "New order created from the dashboard: "
+msgstr ""
+
+#: ../woochimp.php:3262
+msgid "New order process launched for order id: "
+msgstr ""
+
+#: ../woochimp.php:3273
+msgid ""
+"Order already processed or something is deactivated in options, stopping."
+msgstr ""
+
+#: ../woochimp.php:3316
+msgid "User unchecked preference checkbox - unsubscribing..."
+msgstr ""
+
+#: ../woochimp.php:3320
+msgid "User haven't checked preference checkbox, stopping."
+msgstr ""
+
+#: ../woochimp.php:3354
+#, php-format
+msgid "Subscription process launched for order id %s and sets type %s "
+msgstr ""
+
+#: ../woochimp.php:3359
+msgid "Order is not found, stopping."
+msgstr ""
+
+#: ../woochimp.php:3377
+msgid "Email is not found, stopping."
+msgstr ""
+
+#: ../woochimp.php:3383
+msgid "User already subscribed from this order, stopping."
+msgstr ""
+
+#: ../woochimp.php:3771
+msgid "Subscribe process launched for user email: "
+msgstr ""
+
+#: ../woochimp.php:3819
+msgid "User was subscribed successfully."
+msgstr ""
+
+#: ../woochimp.php:3831
+msgid "Member already exists."
+msgstr ""
+
+#: ../woochimp.php:3855
+msgid "Unsubscribe process launched for user email: "
+msgstr ""
+
+#: ../woochimp.php:3859
+msgid "Member deleted successfully."
+msgstr ""
+
+#: ../woochimp.php:4376
+msgid "User groups update process launched for user id: "
+msgstr ""
+
+#: ../woochimp.php:4420
+msgid "Groups updated."
+msgstr ""
+
+#: ../woochimp.php:4539
 msgid "Aaland Islands"
 msgstr ""
 
-#: ../woochimp.php:4316
+#: ../woochimp.php:4540
 msgid "Antigua And Barbuda"
 msgstr ""
 
-#: ../woochimp.php:4317
+#: ../woochimp.php:4541
 msgid "Brunei Darussalam"
 msgstr ""
 
-#: ../woochimp.php:4318
+#: ../woochimp.php:4542
 msgid "Congo"
 msgstr ""
 
-#: ../woochimp.php:4319
+#: ../woochimp.php:4543
 msgid "Democratic Republic of the Congo"
 msgstr ""
 
-#: ../woochimp.php:4320
+#: ../woochimp.php:4544
 msgid "Cote D'Ivoire"
 msgstr ""
 
-#: ../woochimp.php:4321
+#: ../woochimp.php:4545
 msgid "Curacao"
 msgstr ""
 
-#: ../woochimp.php:4322
+#: ../woochimp.php:4546
 msgid "Heard and Mc Donald Islands"
 msgstr ""
 
-#: ../woochimp.php:4323
+#: ../woochimp.php:4547
 msgid "Ireland"
 msgstr ""
 
-#: ../woochimp.php:4324
+#: ../woochimp.php:4548
 msgid "Jersey  (Channel Islands)"
 msgstr ""
 
-#: ../woochimp.php:4325
+#: ../woochimp.php:4549
 msgid "Lao People's Democratic Republic"
 msgstr ""
 
-#: ../woochimp.php:4326
+#: ../woochimp.php:4550
 msgid "Macau"
 msgstr ""
 
-#: ../woochimp.php:4327
+#: ../woochimp.php:4551
 msgid "Micronesia, Federated States of"
 msgstr ""
 
-#: ../woochimp.php:4328
+#: ../woochimp.php:4552
 msgid "Moldova, Republic of"
 msgstr ""
 
-#: ../woochimp.php:4329
+#: ../woochimp.php:4553
 msgid "Palau"
 msgstr ""
 
-#: ../woochimp.php:4330
+#: ../woochimp.php:4554
 msgid "Palestine"
 msgstr ""
 
-#: ../woochimp.php:4331
+#: ../woochimp.php:4555
 msgid "Samoa (Independent)"
 msgstr ""
 
-#: ../woochimp.php:4332
+#: ../woochimp.php:4556
 msgid "Sao Tome and Principe"
 msgstr ""
 
-#: ../woochimp.php:4333
+#: ../woochimp.php:4557
 msgid "Sint Maarten"
 msgstr ""
 
-#: ../woochimp.php:4334
+#: ../woochimp.php:4558
 msgid "South Georgia and the South Sandwich Islands"
 msgstr ""
 
-#: ../woochimp.php:4335
+#: ../woochimp.php:4559
 msgid "St. Helena"
 msgstr ""
 
-#: ../woochimp.php:4336
+#: ../woochimp.php:4560
 msgid "St. Pierre and Miquelon"
 msgstr ""
 
-#: ../woochimp.php:4337
+#: ../woochimp.php:4561
 msgid "Svalbard and Jan Mayen Islands"
 msgstr ""
 
-#: ../woochimp.php:4338
+#: ../woochimp.php:4562
 msgid "Turks & Caicos Islands"
 msgstr ""
 
-#: ../woochimp.php:4339
+#: ../woochimp.php:4563
 msgid "United Kingdom"
 msgstr ""
 
-#: ../woochimp.php:4340
+#: ../woochimp.php:4564
 msgid "United States of America"
 msgstr ""
 
-#: ../woochimp.php:4341
+#: ../woochimp.php:4565
 msgid "Vatican City State (Holy See)"
 msgstr ""
 
-#: ../woochimp.php:4342
+#: ../woochimp.php:4566
 msgid "Wallis and Futuna Islands"
 msgstr ""
 
-#: ../woochimp.php:4343
+#: ../woochimp.php:4567
 msgid "Virgin Islands (British)"
 msgstr ""
 
-#: ../woochimp.php:4521
+#: ../woochimp.php:4745
 msgid "Grouping"
 msgstr ""
 
-#: ../woochimp.php:4976
+#: ../woochimp.php:5212
 msgid "Nothing found."
 msgstr ""
 
-#: ../woochimp.php:4982
+#: ../woochimp.php:5218
 msgid "No query was sent."
 msgstr ""
 
-#: ../woochimp.php:5144
+#: ../woochimp.php:5361
+msgid "REQUEST: "
+msgstr ""
+
+#: ../woochimp.php:5367
+msgid "RESPONSE: "
+msgstr ""
+
+#: ../woochimp.php:5388
+msgid "REQUEST PARAMS: "
+msgstr ""
+
+#: ../woochimp.php:5391
+msgid "RESPONSE:"
+msgstr ""
+
+#: ../woochimp.php:5413
+msgid "OLD LOG START"
+msgstr ""
+
+#: ../woochimp.php:5415
+msgid "OLD LOG END"
+msgstr ""
+
+#: ../woochimp.php:5524
 #, php-format
 msgid ""
 "<strong>Warning!</strong> MailChimp E-Commerce functionality requires a "
 "Store to be configured. You can do this %s."
 msgstr ""
 
-#: ../woochimp.php:5144 ../woochimp.php:5177
+#: ../woochimp.php:5524 ../woochimp.php:5557
 msgid "here"
 msgstr ""
 
-#: ../woochimp.php:5155
+#: ../woochimp.php:5535
 #, php-format
 msgid ""
 "<strong>WooChimp</strong> requires PHP %s or later. Please update PHP on "
 "your server to use this plugin."
 msgstr ""
 
-#: ../woochimp.php:5155 ../woochimp.php:5166 ../woochimp.php:5177
-#: ../woochimp.php:5188
+#: ../woochimp.php:5535 ../woochimp.php:5546 ../woochimp.php:5557
+#: ../woochimp.php:5568
 #, php-format
 msgid "If you have any questions, please contact %s."
 msgstr ""
 
-#: ../woochimp.php:5155 ../woochimp.php:5166 ../woochimp.php:5177
-#: ../woochimp.php:5188
+#: ../woochimp.php:5535 ../woochimp.php:5546 ../woochimp.php:5557
+#: ../woochimp.php:5568
 msgid "RightPress Support"
 msgstr ""
 
-#: ../woochimp.php:5166
+#: ../woochimp.php:5546
 #, php-format
 msgid ""
 "<strong>WooChimp</strong> requires WordPress version %s or later. Please "
 "update WordPress to use this plugin."
 msgstr ""
 
-#: ../woochimp.php:5177
+#: ../woochimp.php:5557
 #, php-format
 msgid ""
 "<strong>WooChimp</strong> requires WooCommerce to be activated. You can "
 "download WooCommerce %s."
 msgstr ""
 
-#: ../woochimp.php:5188
+#: ../woochimp.php:5568
 #, php-format
 msgid ""
 "<strong>WooChimp</strong> requires WooCommerce version %s or later. Please "

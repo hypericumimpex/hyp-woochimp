@@ -1,3 +1,17 @@
+Version 2.2.2, 1 February 2017
+------------------------------------------------------------------------------------
+* Fix - Sending welcome email and double opt-in stopped working after API 3.0 upgrade
+* Fix - Fatal error (Cannot unset string offsets) in "Status" section of settings on some setups
+* Fix - Incorrect user ids passing for guests
+* Fix - Order date and status passing incorrectly or not passing at all
+* Fix - Cancelled order generates PHP Warning
+* Fix - Error after GET request for stores list
+* Tweak - Improved log messages (more details, better readability)
+* Tweak - E-Commerce order data: campaign id is omitted if incorrect for selected list
+* Tweak - Product SKU is now included in E-Commerce order data
+* Tweak - Added support for WPML
+* Tweak - Other small bug fixes
+
 Version 2.2.1, 15 October 2016
 ------------------------------------------------------------------------------------
 * Feature - Allow to select opt-in status for Ecommerce customers

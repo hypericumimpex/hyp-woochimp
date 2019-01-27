@@ -140,6 +140,16 @@ function woochimp_plugin_settings()
                                     ),
                                     'hint' => __('<p>If enabled, order data will be sent to MailChimp as soon as order is marked as completed.</p>', 'woochimp'),
                                 ),
+                                'sync_order_data' => array(
+                                    'title' => __('Enable orders sync', 'woochimp'),
+                                    'type' => 'checkbox',
+                                    'default' => 0,
+                                    'validation' => array(
+                                        'rule' => 'bool',
+                                        'empty' => false
+                                    ),
+                                    'hint' => __('<p>If enabled, order data will be sent to MailChimp every few minutes (5 orders at a time)</p>', 'woochimp'),
+                                ),
                                 'update_order_status' => array(
                                     'title' => __('Update order status', 'woochimp'),
                                     'type' => 'checkbox',
@@ -320,35 +330,15 @@ function woochimp_plugin_settings()
                                     ),
                                     'hint' => __('<p>Action to take if user is already subscribed to the list.</p>', 'woochimp'),
                                 ),
-                                'replace_groups_checkout_checkbox' => array(
-                                    'title' => __('Replace groups on MailChimp', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => '1',
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If selected, interest groups provided above will replace any other interest groups for existing users.</p> <p>Otherwise, provided groups will be merged with existing interest groups on subscriber profile.</p>', 'woochimp'),
-                                ),
                                 'double_checkout_checkbox' => array(
-                                    'title' => __('Double opt-in', 'woochimp'),
+                                    'title' => __('Double opt-in and welcome email', 'woochimp'),
                                     'type' => 'checkbox',
                                     'default' => 0,
                                     'validation' => array(
                                         'rule' => 'bool',
                                         'empty' => false
                                     ),
-                                    'hint' => __('<p>Enable standard MailChimp double opt-in functionality. Customers will be sent an email and required to confirm subscription.</p>', 'woochimp'),
-                                ),
-                                'welcome_checkout_checkbox' => array(
-                                    'title' => __('Send welcome email', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => 0,
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If enabled, customers will receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
+                                    'hint' => __('<p>If enabled, customers will be subscribed with \'pending\' status, and confirmation email will be sent to confirm subscription. Customers will also receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
                                 ),
                             ),
                         ),
@@ -397,35 +387,15 @@ function woochimp_plugin_settings()
                                     ),
                                     'hint' => __('<p>If selected, users who have unsubscribed from the selected list in the past, will not be automatically subscribed again.</p> <p>This requires MailChimp Webhook integration to be active.</p>', 'woochimp'),
                                 ),
-                                'replace_groups_checkout_auto' => array(
-                                    'title' => __('Replace groups on MailChimp', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => '1',
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If selected, interest groups provided above will replace any other interest groups for existing users.</p> <p>Otherwise, provided groups will be merged with existing interest groups on subscriber profile.</p>', 'woochimp'),
-                                ),
                                 'double_checkout_auto' => array(
-                                    'title' => __('Double opt-in', 'woochimp'),
+                                    'title' => __('Double opt-in and welcome email', 'woochimp'),
                                     'type' => 'checkbox',
                                     'default' => 0,
                                     'validation' => array(
                                         'rule' => 'bool',
                                         'empty' => false
                                     ),
-                                    'hint' => __('<p>Enable standard MailChimp double opt-in functionality. Customers will be sent an email and required to confirm subscription.</p>', 'woochimp'),
-                                ),
-                                'welcome_checkout_auto' => array(
-                                    'title' => __('Send welcome email', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => 0,
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If enabled, customers will receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
+                                    'hint' => __('<p>If enabled, customers will be subscribed with \'pending\' status, and confirmation email will be sent to confirm subscription. Customers will also receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
                                 ),
                             ),
                         ),
@@ -453,35 +423,15 @@ function woochimp_plugin_settings()
                                     ),
                                     'hint' => __('<p>If enabled, a signup form will be displayed in a widget.</p> <p>You still must insert <strong>MailChimp Signup</strong> widget to one of the sidebars.</p>', 'woochimp'),
                                 ),
-                                'replace_groups_widget' => array(
-                                    'title' => __('Replace groups on MailChimp', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => '1',
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If selected, interest groups provided above will replace any other interest groups for existing users.</p> <p>Otherwise, provided groups will be merged with existing interest groups on subscriber profile.</p>', 'woochimp'),
-                                ),
                                 'double_widget' => array(
-                                    'title' => __('Double opt-in', 'woochimp'),
+                                    'title' => __('Double opt-in and welcome email', 'woochimp'),
                                     'type' => 'checkbox',
                                     'default' => 0,
                                     'validation' => array(
                                         'rule' => 'bool',
                                         'empty' => false
                                     ),
-                                    'hint' => __('<p>Enable standard MailChimp double opt-in functionality. Customers will be sent an email and required to confirm subscription.</p>', 'woochimp'),
-                                ),
-                                'welcome_widget' => array(
-                                    'title' => __('Send welcome email', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => 0,
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If enabled, customers will receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
+                                    'hint' => __('<p>If enabled, customers will be subscribed with \'pending\' status, and confirmation email will be sent to confirm subscription. Customers will also receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
                                 ),
                             ),
                         ),
@@ -580,35 +530,15 @@ function woochimp_plugin_settings()
                                     ),
                                     'hint' => __('<p>If enabled, a signup form will be displayed wherever you place a shortcode.</p>', 'woochimp'),
                                 ),
-                                'replace_groups_shortcode' => array(
-                                    'title' => __('Replace groups on MailChimp', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => '1',
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If selected, interest groups provided above will replace any other interest groups for existing users.</p> <p>Otherwise, provided groups will be merged with existing interest groups on subscriber profile.</p>', 'woochimp'),
-                                ),
                                 'double_shortcode' => array(
-                                    'title' => __('Double opt-in', 'woochimp'),
+                                    'title' => __('Double opt-in and welcome email', 'woochimp'),
                                     'type' => 'checkbox',
                                     'default' => 0,
                                     'validation' => array(
                                         'rule' => 'bool',
                                         'empty' => false
                                     ),
-                                    'hint' => __('<p>Enable standard MailChimp double opt-in functionality. Customers will be sent an email and required to confirm subscription.</p>', 'woochimp'),
-                                ),
-                                'welcome_shortcode' => array(
-                                    'title' => __('Send welcome email', 'woochimp'),
-                                    'type' => 'checkbox',
-                                    'default' => 0,
-                                    'validation' => array(
-                                        'rule' => 'bool',
-                                        'empty' => false
-                                    ),
-                                    'hint' => __('<p>If enabled, customers will receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
+                                    'hint' => __('<p>If enabled, customers will be subscribed with \'pending\' status, and confirmation email will be sent to confirm subscription. Customers will also receive welcome email as configured in MailChimp settings.</p>', 'woochimp'),
                                 ),
                             ),
                         ),

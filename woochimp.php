@@ -4,7 +4,7 @@
  * Plugin Name: HYP WooChimp
  * Plugin URI: https://github.com/hypericumimpex/hyp-woochimp/
  * Description: MailChimp WooCommerce Integration
- * Version: 2.2.1
+ * Version: 2.2.2
  * Author: RightPress
  * Author URI: https://github.com/hypericumimpex/
  * Requires at least: 3.5
@@ -26,7 +26,7 @@ if (!defined('ABSPATH')) {
 // Define Constants
 define('WOOCHIMP_PLUGIN_PATH', plugin_dir_path(__FILE__));
 define('WOOCHIMP_PLUGIN_URL', plugins_url(basename(plugin_dir_path(__FILE__)), basename(__FILE__)));
-define('WOOCHIMP_VERSION', '2.2.1');
+define('WOOCHIMP_VERSION', '2.2.2');
 define('WOOCHIMP_SUPPORT_PHP', '5.3');
 define('WOOCHIMP_SUPPORT_WP', '3.5');
 define('WOOCHIMP_SUPPORT_WC', '2.1');
@@ -77,6 +77,7 @@ if (!class_exists('WooChimp')) {
             require WOOCHIMP_PLUGIN_PATH . 'includes/classes/woochimp-mailchimp-subscription.class.php';
             require WOOCHIMP_PLUGIN_PATH . 'includes/woochimp-plugin-structure.inc.php';
             require WOOCHIMP_PLUGIN_PATH . 'includes/woochimp-form.inc.php';
+            require WOOCHIMP_PLUGIN_PATH . 'includes/classes/woochimp-scheduler.class.php';
 
             // Initialize automatic updates
             require_once(plugin_dir_path(__FILE__) . 'includes/classes/libraries/rightpress-updates.class.php');
@@ -88,6 +89,9 @@ if (!class_exists('WooChimp')) {
 
             // Maybe migrate some options
             $this->migrate_options();
+
+            // Maybe activate the log
+            $this->log_setup();
 
             // API3 options migration
             if (!isset($this->opt['api_version']) || $this->opt['api_version'] < 3) {
@@ -116,22 +120,30 @@ if (!class_exists('WooChimp')) {
             add_shortcode('woochimp_form', array($this, 'subscription_shortcode'));
 
             // Hook into WooCommerce
-            add_action('woocommerce_order_status_completed', array($this, 'on_completed'));
-            add_action('woocommerce_order_status_processing', array($this, 'on_completed'));
-            add_action('woocommerce_payment_complete', array($this, 'on_completed'));
-            add_action('woocommerce_order_status_cancelled', array($this, 'on_cancel'));
-            add_filter('woocommerce_order_status_refunded', array($this, 'on_cancel'));
-            add_filter('woocommerce_order_status_changed', array($this, 'on_status_update'));
-
-            // Checkout
-            add_action('woocommerce_checkout_update_order_meta', array($this, 'on_checkout'));
 
             // New order
             add_action('woocommerce_new_order', array($this, 'new_order'));
 
             // New order added by admin
-            add_filter('woocommerce_process_shop_order_meta', array($this, 'new_order'));
+            add_filter('woocommerce_process_shop_order_meta', array($this, 'new_admin_order'), 99);
 
+            // Order placed
+            add_action('woocommerce_checkout_update_order_meta', array($this, 'on_placed'));
+            add_action('woocommerce_thankyou', array($this, 'on_placed'));
+
+            // Order completed
+            add_action('woocommerce_order_status_completed', array($this, 'on_completed'));
+            add_action('woocommerce_order_status_processing', array($this, 'on_completed'));
+            add_action('woocommerce_payment_complete', array($this, 'on_completed'));
+
+            // Order status changed
+            add_filter('woocommerce_order_status_changed', array($this, 'on_status_update'));
+
+            // Order cancelled/refunded
+            add_action('woocommerce_order_status_cancelled', array($this, 'on_cancel'));
+            add_filter('woocommerce_order_status_refunded', array($this, 'on_cancel'));
+
+            // Add checkout checkbox
             $checkbox_position = (isset($this->opt['woochimp_checkbox_position']) && !empty($this->opt['woochimp_checkbox_position'])) ? $this->opt['woochimp_checkbox_position'] : 'woocommerce_checkout_after_customer_details';
             add_action($checkbox_position, array($this, 'add_permission_question'));
 
@@ -168,6 +180,9 @@ if (!class_exists('WooChimp')) {
             if (isset($_GET['woochimp-get-user-groups'])) {
                 add_action('init', array($this, 'get_user_groups_handler'));
             }
+
+            // Maybe schedule sync events
+            $this->schedule_sync_events();
 
             // Define form styles
             $this->form_styles = array(
@@ -405,12 +420,8 @@ if (!class_exists('WooChimp')) {
                     'sets_checkbox'                             => array(),
                     'sets_auto'                                 => $sets,
                     'woochimp_do_not_resubscribe_auto'          => $this->opt['woochimp_do_not_resubscribe'],
-                    'woochimp_replace_groups_checkout_checkbox' => '1',
-                    'woochimp_replace_groups_checkout_auto'     => $this->opt['woochimp_replace_groups_checkout'],
                     'woochimp_double_checkout_checkbox'         => 0,
                     'woochimp_double_checkout_auto'             => $this->opt['woochimp_double_checkout'],
-                    'woochimp_welcome_checkout_checkbox'        => 0,
-                    'woochimp_welcome_checkout_auto'            => $this->opt['woochimp_welcome_checkout'],
                 );
             }
 
@@ -423,12 +434,8 @@ if (!class_exists('WooChimp')) {
                     'sets_checkbox'                             => $sets,
                     'sets_auto'                                 => array(),
                     'woochimp_do_not_resubscribe_auto'          => $this->opt['woochimp_do_not_resubscribe'],
-                    'woochimp_replace_groups_checkout_checkbox' => $this->opt['woochimp_replace_groups_checkout'],
-                    'woochimp_replace_groups_checkout_auto'     => '1',
                     'woochimp_double_checkout_checkbox'         => $this->opt['woochimp_double_checkout'],
                     'woochimp_double_checkout_auto'             => 0,
-                    'woochimp_welcome_checkout_checkbox'        => $this->opt['woochimp_welcome_checkout'],
-                    'woochimp_welcome_checkout_auto'            => 0,
                 );
             }
 
@@ -1444,14 +1451,8 @@ if (!class_exists('WooChimp')) {
                     // Hide checkbox for subscribed
                     $output['woochimp_hide_checkbox'] = (in_array($input['woochimp_hide_checkbox'], array('1','2','3'))) ? $input['woochimp_hide_checkbox'] : '1';
 
-                    // Replace groups on MailChimp
-                    $output['woochimp_replace_groups_checkout_checkbox'] = (isset($input['woochimp_replace_groups_checkout_checkbox']) && $input['woochimp_replace_groups_checkout_checkbox'] == '1') ? '1' : '0';
-
                     // Double opt-in
                     $output['woochimp_double_checkout_checkbox'] = (isset($input['woochimp_double_checkout_checkbox']) && $input['woochimp_double_checkout_checkbox'] == '1') ? '1' : '0';
-
-                    // Send welcome email
-                    $output['woochimp_welcome_checkout_checkbox'] = (isset($input['woochimp_welcome_checkout_checkbox']) && $input['woochimp_welcome_checkout_checkbox'] == '1') ? '1' : '0';
 
                     // Sets
                     $sets_key = 'sets_checkbox';
@@ -1466,14 +1467,8 @@ if (!class_exists('WooChimp')) {
                     // Do not resubscribe unsubscribed
                     $output['woochimp_do_not_resubscribe_auto'] = (isset($input['woochimp_do_not_resubscribe_auto']) && $input['woochimp_do_not_resubscribe_auto'] == '1') ? '1' : '0';
 
-                    // Replace groups on MailChimp
-                    $output['woochimp_replace_groups_checkout_auto'] = (isset($input['woochimp_replace_groups_checkout_auto']) && $input['woochimp_replace_groups_checkout_auto'] == '1') ? '1' : '0';
-
                     // Double opt-in
                     $output['woochimp_double_checkout_auto'] = (isset($input['woochimp_double_checkout_auto']) && $input['woochimp_double_checkout_auto'] == '1') ? '1' : '0';
-
-                    // Send welcome email
-                    $output['woochimp_welcome_checkout_auto'] = (isset($input['woochimp_welcome_checkout_auto']) && $input['woochimp_welcome_checkout_auto'] == '1') ? '1' : '0';
 
                     // Sets
                     $sets_key = 'sets_auto';
@@ -2128,6 +2123,7 @@ if (!class_exists('WooChimp')) {
                 return $results;
             }
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return array('' => '');
             }
         }
@@ -2168,6 +2164,7 @@ if (!class_exists('WooChimp')) {
                 return $results;
             }
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return array();
             }
         }
@@ -2187,7 +2184,7 @@ if (!class_exists('WooChimp')) {
 
             try {
 
-                if (!$this->mailchimp) {
+                if (!$this->mailchimp || empty($list_id)) {
                     throw new Exception(__('Unable to load groups', 'woochimp'));
                 }
 
@@ -2237,6 +2234,7 @@ if (!class_exists('WooChimp')) {
                         }
                     }
                     catch (Exception $e) {
+                        $this->log_process_exception($e);
                         continue;
                     }
 
@@ -2264,6 +2262,7 @@ if (!class_exists('WooChimp')) {
             }
 
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return array();
             }
         }
@@ -2309,6 +2308,7 @@ if (!class_exists('WooChimp')) {
                 return $results;
             }
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return $results;
             }
         }
@@ -2341,11 +2341,8 @@ if (!class_exists('WooChimp')) {
                 require_once WOOCHIMP_PLUGIN_PATH . 'includes/woochimp-mailchimp.class.php';
             }
 
-            // Check if log is enabled
-            $log = $this->opt['woochimp_enable_log'] == 1 ? $this->opt['woochimp_log_events'] : false;
-
             // Try to initialize MailChimp
-            $this->mailchimp = new WooChimp_Mailchimp($key, $log);
+            $this->mailchimp = new WooChimp_Mailchimp($key);
 
             if (!$this->mailchimp) {
                 return __('Unable to initialize MailChimp class', 'woochimp');
@@ -2406,14 +2403,12 @@ if (!class_exists('WooChimp')) {
                 require_once WOOCHIMP_PLUGIN_PATH . 'includes/woochimp-mailchimp.class.php';
             }
 
-            // Check if log is enabled
-            $log = $this->opt['woochimp_enable_log'] == 1 ? $this->opt['woochimp_log_events'] : false;
-
             try {
-                $this->mailchimp = new WooChimp_Mailchimp($this->opt['woochimp_api_key'], $log);
+                $this->mailchimp = new WooChimp_Mailchimp($this->opt['woochimp_api_key']);
                 return true;
             }
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return false;
             }
         }
@@ -2436,7 +2431,8 @@ if (!class_exists('WooChimp')) {
             }
             else {
                 $message = '<h4><i class="fa fa-times" style="font-size: 1.5em; color: red;"></i>&nbsp;&nbsp;&nbsp;' . __('Connection to MailChimp failed.', 'woochimp') . '</h4>';
-                $mailchimp_error = $this->test_mailchimp();
+                $mailchimp_error = maybe_unserialize($this->test_mailchimp());
+                $mailchimp_error = $mailchimp_error['message'];
 
                 if ($mailchimp_error !== true) {
                     $message .= '<p><strong>' . __('Reason', 'woochimp') . ':</strong> '. $mailchimp_error .'</p>';
@@ -2567,7 +2563,7 @@ if (!class_exists('WooChimp')) {
             $order = self::wc_get_order($order_id);
 
             if (!$order) {
-                return;
+                return false;
             }
 
             // Get store id (or create new)
@@ -2578,23 +2574,40 @@ if (!class_exists('WooChimp')) {
             }
 
             // Get customer details
+            $customer_email = $order->billing_email;
+
+            // Regular user
+            if ($order->user_id > 0) {
+                $customer_id = self::ecomm_get_id('user', $order->user_id);
+            }
+
+            // Guest
+            else {
+
+                // Create guest id based on email
+                $customer_email_hash = WooChimp_Mailchimp::member_hash($customer_email);
+                $customer_id = self::ecomm_get_id('guest', $customer_email_hash);
+            }
+
             $customer_details = array(
-                'id'            => self::ecomm_get_id('user', $order->user_id),
-                'email_address' => $order->billing_email,
-                'first_name'    => $order->billing_first_name,
-                'last_name'     => $order->billing_last_name,
+                'id'            => $customer_id,
+                'email_address' => $customer_email,
+                'first_name'    => !empty($order->billing_first_name) ? $order->billing_first_name :  $order->shipping_first_name,
+                'last_name'     => !empty($order->billing_last_name) ? $order->billing_last_name :  $order->shipping_last_name,
                 'opt_in_status' => $this->opt['woochimp_opt_in_all'] == '1' ? true : false,
             );
 
 
             // Get order details
             $order_details = array(
-                'id'               => self::ecomm_get_id('order', $order_id),
-                'customer'         => $customer_details,
-                'financial_status' => $order->get_status(),
-                'currency_code'    => $order->get_order_currency(),
-                'order_total'      => floatval($order->order_total),
-                'lines'            => array(),
+                'id'                   => self::ecomm_get_id('order', $order_id),
+                'customer'             => $customer_details,
+                'financial_status'     => $order->get_status(),
+                'currency_code'        => $order->get_order_currency(),
+                'order_total'          => floatval($order->order_total),
+                'processed_at_foreign' => $order->order_date,
+                'updated_at_foreign'   => $order->modified_date,
+                'lines'                => array(),
             );
 
             // Check if we have campaign ID and email ID for this user/order
@@ -2622,6 +2635,8 @@ if (!class_exists('WooChimp')) {
                 // Need to create product, if not exists
                 if ($this->product_exists($store_id, $mc_product_id) === false) {
 
+                    $this->log_add(sprintf(__('Product %s product does not exist, creating new...', 'woochimp'), $mc_product_id));
+
                     $product_details = array(
                         'id'       => $mc_product_id,
                         'title'    => $item['name'],
@@ -2629,6 +2644,7 @@ if (!class_exists('WooChimp')) {
                                 array(
                                     'id'    => $mc_variation_id,
                                     'title' => $item['name'],
+                                    'sku'   => $product->get_sku(),
                                 ),
                             )
                     );
@@ -2642,9 +2658,12 @@ if (!class_exists('WooChimp')) {
                     // Add variation if not exists
                     if ($this->product_exists($store_id, $mc_product_id, $mc_variation_id) === false) {
 
+                        $this->log_add(sprintf(__('Variation %s of product %s does not exist, creating...', 'woochimp'), $mc_variation_id, $mc_product_id));
+
                         $variant_details = array(
                             'id'    => $mc_variation_id,
                             'title' => $item['name'],
+                            'sku'   => $product->get_sku(),
                         );
 
                         $this->mailchimp->create_variant($store_id, $mc_product_id, $variant_details);
@@ -2679,6 +2698,7 @@ if (!class_exists('WooChimp')) {
             // Define prefixes
             $prefixes = apply_filters('woochimp_ecommerce_id_prefixes', array(
                 'user'    => 'user_',
+                'guest'   => 'guest_',
                 'order'   => 'order_',
                 'product' => 'product_',
                 'item'    => 'item_',
@@ -2724,13 +2744,23 @@ if (!class_exists('WooChimp')) {
             // Get defined name
             $store_id_set = $this->opt['woochimp_store_id'];
 
+            // Add log entry
+            $this->log_add(__('Getting the Store...', 'woochimp'));
+
             if (empty($list_id)) {
-                $this->mailchimp->log_add(__('No list selected for Store.', 'woochimp'));
+                $this->log_add(__('No list selected for Store.', 'woochimp'));
                 return false;
             }
 
             // Try to find store associated with list
-            $stores = $this->mailchimp->get_stores();
+            try {
+                $stores = $this->mailchimp->get_stores();
+            }
+            catch (Exception $e) {
+                $this->log_process_exception($e);
+                return false;
+            }
+
             $store_id = null;
 
             if (!empty($stores['stores'])) {
@@ -2738,6 +2768,7 @@ if (!class_exists('WooChimp')) {
                 foreach ($stores['stores'] as $store) {
 
                     if ($store['list_id'] == $list_id && $store['id'] == $store_id_set) {
+                        $this->log_add(sprintf(__('Store %s was found.', 'woochimp'), $store['id']));
                         return $store['id'];
                     }
                 }
@@ -2745,6 +2776,8 @@ if (!class_exists('WooChimp')) {
 
             // If not found, create new
             if (is_null($store_id)) {
+
+                $this->log_add(__('Store was not found, creating new...', 'woochimp'));
 
                 // Get domain name from site url
                 $parse = parse_url(site_url());
@@ -2759,10 +2792,13 @@ if (!class_exists('WooChimp')) {
 
                 try {
                     $store = $this->mailchimp->create_store($args);
+                    $this->log_add(__('Store created.', 'woochimp'));
+                    $this->log_process_regular_data($args, $store);
                     return $store['id'];
                 }
 
                 catch (Exception $e) {
+                    $this->log_process_exception($e);
                     return false;
                 }
             }
@@ -2846,6 +2882,36 @@ if (!class_exists('WooChimp')) {
         }
 
         /**
+         * Subscribe on order placed
+         *
+         * @access public
+         * @param int $order_id
+         * @return void
+         */
+        public function on_placed($order_id)
+        {
+            // Check if functionality is enabled
+            if (!$this->opt['woochimp_enabled']) {
+                return;
+            }
+
+            $this->log_add(__('Order placed process launched for order id: ', 'woochimp') . $order_id);
+
+            // Check if WC order class is available and MailChimp is loaded
+            if (class_exists('WC_Order') && $this->load_mailchimp()) {
+
+                // Do we need to subscribe user on completed order or payment?
+                $subscribe_on_placed = get_post_meta($order_id, 'woochimp_subscribe_on_placed', true);
+
+                foreach (array('auto', 'checkbox') as $sets_type) {
+                    if ($subscribe_on_placed == $sets_type) {
+                        $this->subscribe_checkout($order_id, $sets_type);
+                    }
+                }
+            }
+        }
+
+        /**
          * Subscribe on order completed status and send E-Commerce data
          *
          * @access public
@@ -2859,6 +2925,8 @@ if (!class_exists('WooChimp')) {
                 return;
             }
 
+            $this->log_add(__('Order completed process launched for order id: ', 'woochimp') . $order_id);
+
             // Check if WC order class is available and MailChimp is loaded
             if (class_exists('WC_Order') && $this->load_mailchimp()) {
 
@@ -2868,6 +2936,7 @@ if (!class_exists('WooChimp')) {
 
                 // Make sure "on payment" option works in any case
                 if (!empty($subscribe_on_payment) && self::order_is_paid($order_id) === false) {
+                    $this->log_add(__('Subscription on payment active, but order is not paid, stopping.', 'woochimp'));
                     return;
                 }
 
@@ -2879,6 +2948,7 @@ if (!class_exists('WooChimp')) {
 
                 // Check if we need to send order data or was it already sent
                 if (!$this->opt['woochimp_send_order_data'] || self::order_data_sent($order_id)) {
+                    $this->log_add(__('Ecommerce data sending deactivated or data was already sent, stopping.', 'woochimp'));
                     return;
                 }
 
@@ -2886,11 +2956,54 @@ if (!class_exists('WooChimp')) {
                     // Get order args
                     $args = $this->prepare_order_data($order_id);
 
+                    // Check those
+                    if ($args === false) {
+                        throw new Exception(__('Unable to proceed - order args was not created.', 'woochimp'));
+                    }
+
+                    // Check if order exists in MailChimp
+                    if ($this->order_exists($args['store_id'], $args['id']) === true) {
+                        $this->log_add(sprintf(__('Order %s already exists in Store %s, stopping.', 'woochimp'), $args['id'], $args['store_id']));
+                        return;
+                    }
+
                     // Send order data
-                    $this->mailchimp->create_order($args['store_id'], $args);
+                    $result = $this->mailchimp->create_order($args['store_id'], $args);
                     update_post_meta($order_id, '_woochimp_ecomm_sent', 1);
+
+                    // Add to log
+                    $this->log_add(__('Ecommerce data sent successfully.', 'woochimp'));
+                    $this->log_process_regular_data($args, $result);
                 }
                 catch (Exception $e) {
+
+                    $this->log_add(__('Ecommerce data wasn\'t sent.', 'woochimp'));
+
+                    // Check message
+                    if (preg_match('/.+campaign with the provided ID does not exist in the account for this list+/', $e->getMessage())) {
+
+                        // Remove campaign id from args
+                        unset($args['campaign_id']);
+
+                        // Try to send order data again
+                        try {
+                            $result = $this->mailchimp->create_order($args['store_id'], $args);
+                            update_post_meta($order_id, '_woochimp_ecomm_sent', 1);
+
+                            // Add to log
+                            $this->log_add(__('Ecommerce data sent successfully, but campaign id was omitted.', 'woochimp'));
+                            $this->log_process_regular_data($args, $result);
+                        }
+                        catch (Exception $ex) {
+                            $this->log_add(__('Ecommerce data wasn\'t sent even after omitting campaign id.', 'woochimp'));
+                            $this->log_process_exception($ex);
+                            return;
+                        }
+                    }
+                    else {
+                        $this->log_process_exception($e);
+                    }
+
                     return;
                 }
             }
@@ -2906,11 +3019,25 @@ if (!class_exists('WooChimp')) {
         public function on_status_update($order_id, $old_status = '', $new_status = '')
         {
             // Check if it's enabled
-            if (!$this->opt['woochimp_update_order_status'] || empty($order_id) || empty($new_status)) {
+            if (!$this->opt['woochimp_update_order_status'] || empty($order_id)) {
                 return;
             }
 
-            // Get store id
+            $this->log_add(__('Order status update process launched for order id: ', 'woochimp') . $order_id);
+
+            // Try to get order object
+            $order = self::wc_get_order($order_id);
+
+            // Stop if there's no order and no status
+            if (!$order && empty($new_status)) {
+                $this->log_add(__('No order and no status found, stopping.', 'woochimp'));
+                return;
+            }
+
+            // Check status
+            $new_status = empty($new_status) ? $order->get_status() : $new_status;
+
+            // Get MC store id
             try {
                 $store_id = $this->ecomm_get_store();
 
@@ -2922,21 +3049,33 @@ if (!class_exists('WooChimp')) {
                 return;
             }
 
+            // Get MC order id
             $mc_order_id = self::ecomm_get_id('order', $order_id);
+
+            // Prepare order args to send
+            $args = array(
+                'financial_status'     => $new_status,
+                'processed_at_foreign' => $order->order_date,
+                'updated_at_foreign'   => $order->modified_date,
+            );
 
             // Check if MailChimp is loaded
             if ($this->load_mailchimp()) {
 
                 // Check if order exists in MailChimp
                 if ($this->order_exists($store_id, $mc_order_id) === false) {
+                    $this->log_add(sprintf(__('Order %s does not exist in Store %s, stopping.', 'woochimp'), $mc_order_id, $store_id));
                     return;
                 }
 
                 // Send request to update order
                 try {
-                    $this->mailchimp->update_order($store_id, $mc_order_id, array('financial_status' => $new_status));
+                    $result = $this->mailchimp->update_order($store_id, $mc_order_id, $args);
+                    $this->log_add(__('Order updated successfully.', 'woochimp'));
+                    $this->log_process_regular_data($args, $result);
                 }
                 catch (Exception $e) {
+                    $this->log_process_exception($e);
                     return;
                 }
             }
@@ -2956,6 +3095,8 @@ if (!class_exists('WooChimp')) {
                 return;
             }
 
+            $this->log_add(__('Order cancel process launched for order id: ', 'woochimp') . $order_id);
+
             // Get store id
             try {
                 $store_id = $this->ecomm_get_store();
@@ -2975,14 +3116,17 @@ if (!class_exists('WooChimp')) {
 
                 // Check if order exists in MailChimp
                 if ($this->order_exists($store_id, $mc_order_id) === false) {
+                    $this->log_add(sprintf(__('Order %s does not exist in Store %s, stopping.', 'woochimp'), $mc_order_id, $store_id));
                     return;
                 }
 
                 // Send request to delete order
                 try {
                     $this->mailchimp->delete_order($store_id, $mc_order_id);
+                    $this->log_add(__('Order deleted successfully.', 'woochimp'));
                 }
                 catch (Exception $e) {
+                    $this->log_process_exception($e);
                     return;
                 }
             }
@@ -3057,19 +3201,15 @@ if (!class_exists('WooChimp')) {
         }
 
         /**
-         * Subscribe user on checkout
+         * Get user data on checkout
          *
          * @access public
          * @param int $order_id
          * @return bool
          */
-        public function on_checkout($order_id)
+        public function get_checkout_data($order_id)
         {
-            // Check if order was processed before
-            if (self::new_order_processed($order_id)) {
-                return;
-            }
-
+            // Check and save campaign variables
             foreach (array('woochimp_mc_cid', 'woochimp_mc_eid') as $mc_id) {
 
                 // Copy from cookie directly
@@ -3093,21 +3233,44 @@ if (!class_exists('WooChimp')) {
         }
 
         /**
+         * New order created by admin
+         *
+         * @access public
+         * @param int $order_id
+         * @return void
+         */
+        public function new_admin_order($order_id)
+        {
+            // Start process in log
+            $this->log_add(__('New order created from the dashboard: ', 'woochimp') . $order_id);
+
+            // Pass on to other method
+            $this->new_order($order_id, true);
+        }
+
+        /**
          * New order actions
          *
          * @access public
          * @param int $order_id
-         * @param bool $user_preference
-         * @param array $user_subscribe_groups
+         * @param bool $admin_order
          * @return void
          */
-        public function new_order($order_id)
+        public function new_order($order_id, $admin_order = false)
         {
-            // Possibly run checkout data process and get user preference
-            $user_preference = $this->on_checkout($order_id);
+            // Start process in log
+            $this->log_add(__('New order process launched for order id: ', 'woochimp') . $order_id);
+
+            // Get checkout data only for user orders
+            if ($admin_order === false) {
+
+                // Possibly run checkout data process and get user preference
+                $user_preference = $this->get_checkout_data($order_id);
+            }
 
             // Check if at least one checkout option is active
             if (!$this->opt['woochimp_enabled'] || (!$this->checkout_auto_is_active() && !$this->checkout_checkbox_is_active()) || self::new_order_processed($order_id)) {
+                $this->log_add(__('Order already processed or something is deactivated in options, stopping.', 'woochimp'));
                 return;
             }
 
@@ -3124,14 +3287,23 @@ if (!class_exists('WooChimp')) {
                     add_post_meta($order_id, 'woochimp_subscribe_on_payment', 'auto', true);
                 }
 
-                // Subscribe now
+                // Subscribe on order placed
                 else {
-                    $this->subscribe_checkout($order_id, 'auto');
+
+                    // On admin dashboard - subscribe now
+                    if ($admin_order) {
+                        $this->subscribe_checkout($order_id, 'auto');
+                    }
+
+                    // Otherwise postpone for later
+                    else {
+                        add_post_meta($order_id, 'woochimp_subscribe_on_placed', 'auto', true);
+                    }
                 }
             }
 
             // Process subscription on checkbox
-            if ($this->checkout_checkbox_is_active()) {
+            if ($this->checkout_checkbox_is_active() && $admin_order === false) {
 
                 // Check if user was already subscribed
                 $already_subscribed = ($this->can_user_subscribe_with_checkbox() === false) ? true : false;
@@ -3141,9 +3313,11 @@ if (!class_exists('WooChimp')) {
 
                     // If user was subscribed, need to unsubscribe him
                     if ($already_subscribed) {
+                        $this->log_add(__('User unchecked preference checkbox - unsubscribing...', 'woochimp'));
                         $this->unsubscribe_checkout($order_id, 'checkbox');
                     }
 
+                    $this->log_add(__('User haven\'t checked preference checkbox, stopping.', 'woochimp'));
                     return;
                 }
 
@@ -3157,9 +3331,9 @@ if (!class_exists('WooChimp')) {
                     add_post_meta($order_id, 'woochimp_subscribe_on_payment', 'checkbox', true);
                 }
 
-                // Subscribe now
+                // Subscribe on order placed
                 else {
-                    $this->subscribe_checkout($order_id, 'checkbox');
+                    add_post_meta($order_id, 'woochimp_subscribe_on_placed', 'checkbox', true);
                 }
             }
 
@@ -3177,9 +3351,12 @@ if (!class_exists('WooChimp')) {
          */
         public function subscribe_checkout($order_id, $sets_type)
         {
+            $this->log_add(sprintf(__('Subscription process launched for order id %s and sets type %s ', 'woochimp'), $order_id, $sets_type));
+
             $order = self::wc_get_order($order_id);
 
             if (!$order) {
+                $this->log_add(__('Order is not found, stopping.', 'woochimp'));
                 return;
             }
 
@@ -3197,11 +3374,13 @@ if (!class_exists('WooChimp')) {
             $email = isset($order->billing_email) ? $order->billing_email : '';
 
             if (empty($email)) {
+                $this->log_add(__('Email is not found, stopping.', 'woochimp'));
                 return;
             }
 
             // Check if user was subscribed earlier (using this sets type)
             if (self::already_subscribed_from_order($order_id, $sets_type)) {
+                $this->log_add(__('User already subscribed from this order, stopping.', 'woochimp'));
                 return;
             }
 
@@ -3240,6 +3419,9 @@ if (!class_exists('WooChimp')) {
                         else {
                             $subscribe_groups = $set['groups'];
                         }
+
+                        // Get double opt-in option
+                        $double_optin = (bool) $this->opt['woochimp_double_checkout_' . $sets_type];
 
                         // Get custom fields
                         $custom_fields = array();
@@ -3290,7 +3472,7 @@ if (!class_exists('WooChimp')) {
 
                         }
 
-                        if ($this->subscribe($set['list'], $email, $subscribe_groups, $custom_fields, $user_id) !== false) {
+                        if ($this->subscribe($set['list'], $email, $subscribe_groups, $custom_fields, $user_id, $double_optin) !== false) {
                             update_post_meta($order_id, '_woochimp_subscribed_' . $sets_type, 1);
                         }
                     }
@@ -3366,10 +3548,10 @@ if (!class_exists('WooChimp')) {
 
             if ($do_not_resubscribe) {
 
-                $unsubscribed_lists = self::read_user_lists('unsubscribed', $user_id);
-                $unsubscribed_lists = array_keys($unsubscribed_lists);
+                $unsubscribed_lists_full = self::read_user_lists('unsubscribed', $user_id);
+                $unsubscribed_lists = array_keys($unsubscribed_lists_full);
 
-                foreach ($woochimp_unsubscribed_lists as $unsub_list) {
+                foreach ($unsubscribed_lists as $unsub_list) {
                     if ($unsub_list == $set['list']) {
                         return false;
                     }
@@ -3378,15 +3560,17 @@ if (!class_exists('WooChimp')) {
 
             $proceed = false;
 
+            // Check the order and try to get data
+            if (is_object($order)) {
+                $items = $order->get_items();
+                $total = $order->order_total;
+            }
+
             // Maybe get items and totals from cart instead of order
-            if ($is_cart) {
+            if ($is_cart || empty($items)) {
                 global $woocommerce;
                 $items = $woocommerce->cart->cart_contents;
                 $total = $woocommerce->cart->total;
-            }
-            else {
-                $items = $order->get_items();
-                $total = $order->order_total;
             }
 
             // Always
@@ -3577,12 +3761,14 @@ if (!class_exists('WooChimp')) {
          * @param int $user_id
          * @return bool
          */
-        public function subscribe($list_id, $email, $groups = array(), $custom_fields = array(), $user_id = 0)
+        public function subscribe($list_id, $email, $groups = array(), $custom_fields = array(), $user_id = 0, $double_optin = false)
         {
             // Load MailChimp
             if (!$this->load_mailchimp()) {
                 return false;
             }
+
+            $this->log_add(__('Subscribe process launched for user email: ', 'woochimp') . $email);
 
             $interests = array();
             $merge_fields = array();
@@ -3596,13 +3782,19 @@ if (!class_exists('WooChimp')) {
                 }
             }
 
+            // Double opt-in option selects the status
+            $user_status = $double_optin ? 'pending' : 'subscribed';
+
+            // Custom fields
             foreach ($custom_fields as $key => $value) {
-                $merge_fields[$key] = $value;
+                if (!empty($value)) {
+                    $merge_fields[$key] = $value;
+                }
             }
 
             $params = array(
                 'email_address' => $email,
-                'status'        => 'subscribed',
+                'status'        => $user_status,
             );
 
             // Don't include empty non-required params
@@ -3619,7 +3811,13 @@ if (!class_exists('WooChimp')) {
 
             // Subscribe
             try {
-                $results = ($update === true) ? $this->mailchimp->put_member($list_id, $params) : $this->mailchimp->post_member($list_id, $params);
+
+                // Note: old "replace groups" options are replaced by this option
+                $result = ($update === true) ? $this->mailchimp->put_member($list_id, $params) : $this->mailchimp->post_member($list_id, $params);
+
+                // Add to log
+                $this->log_add(__('User was subscribed successfully.', 'woochimp'));
+                $this->log_process_regular_data($params, $result);
 
                 // Record user's subscribed list
                 self::track_user_list($list_id, 'subscribed', $email, array_keys($interests), $user_id);
@@ -3630,9 +3828,11 @@ if (!class_exists('WooChimp')) {
             catch (Exception $e) {
 
                 if (preg_match('/.+is already a list member+/', $e->getMessage())) {
+                    $this->log_add(__('Member already exists.', 'woochimp'));
                     return 'member_exists';
                 }
 
+                $this->log_process_exception($e);
                 return false;
             }
         }
@@ -3652,11 +3852,15 @@ if (!class_exists('WooChimp')) {
                 return false;
             }
 
+            $this->log_add(__('Unsubscribe process launched for user email: ', 'woochimp') . $email);
+
             try {
                 $this->mailchimp->delete_member($list_id, $email);
+                $this->log_add(__('Member deleted successfully.', 'woochimp') . $order_id);
                 return true;
             }
             catch (Exception $e) {
+                $this->log_process_exception($e);
                 return false;
             }
         }
@@ -4169,6 +4373,8 @@ if (!class_exists('WooChimp')) {
                 return false;
             }
 
+            $this->log_add(__('User groups update process launched for user id: ', 'woochimp') . $user_id);
+
             // Get user lists and email
             $subscribed_lists_full = self::read_user_lists('subscribed', $user_id);
             $subscribed_lists = array_keys($subscribed_lists_full);
@@ -4209,8 +4415,12 @@ if (!class_exists('WooChimp')) {
 
                     // Mark user
                     update_user_meta($user_id, 'woochimp_user_groups_requested', 1);
+
+                    // Add to log
+                    $this->log_add(__('Groups updated.', 'woochimp'));
                 }
                 catch (Exception $e) {
+                    $this->log_process_exception($e);
                     return false;
                 }
             }
@@ -4252,6 +4462,23 @@ if (!class_exists('WooChimp')) {
             // Sync local data
             self::sync_user_lists($user_id);
             return true;
+        }
+
+        /**
+         * Check and maybe schedule new sync events
+         *
+         * @access public
+         * @return void
+         */
+        public function schedule_sync_events()
+        {
+            // Orders sync - check if enabled and not scheduled yet
+            if ($this->opt['woochimp_sync_order_data'] === '1' && WooChimp_Event_Scheduler::get_scheduled_event_timestamp('order_sync') === false) {
+
+                // Set new timestamp and allow developers to override the interval
+                $timestamp = time() + apply_filters('woochimp_order_sync_interval', 1800);
+                WooChimp_Event_Scheduler::schedule_order_sync($timestamp);
+            }
         }
 
         /**
@@ -4651,6 +4878,12 @@ if (!class_exists('WooChimp')) {
 
             $email = $data['email'];
 
+            // Get double opt-in option
+            $double_optin = (bool) $this->opt['woochimp_double_shortcode'];
+
+            // Get user id
+            $user_id = is_user_logged_in() ? get_current_user_id() : 0;
+
             // Parse custom fields
             $custom_fields = array();
 
@@ -4672,7 +4905,7 @@ if (!class_exists('WooChimp')) {
             }
 
             // Subscribe user
-            $result = $this->subscribe($this->opt['woochimp_list_shortcode'], $email, $this->opt['woochimp_groups_shortcode'], $custom_fields);
+            $result = $this->subscribe($this->opt['woochimp_list_shortcode'], $email, $this->opt['woochimp_groups_shortcode'], $custom_fields, $user_id, $double_optin);
 
             // Subscribe successfully
             if ($result === true) {
@@ -4730,6 +4963,12 @@ if (!class_exists('WooChimp')) {
 
             $email = $data['email'];
 
+            // Get double opt-in option
+            $double_optin = (bool) $this->opt['woochimp_double_widget'];
+
+            // Get user id
+            $user_id = is_user_logged_in() ? get_current_user_id() : 0;
+
             // Parse custom fields
             $custom_fields = array();
 
@@ -4751,7 +4990,7 @@ if (!class_exists('WooChimp')) {
             }
 
             // Subscribe user
-            $result = $this->subscribe($this->opt['woochimp_list_widget'], $email, $this->opt['woochimp_groups_widget'], $custom_fields);
+            $result = $this->subscribe($this->opt['woochimp_list_widget'], $email, $this->opt['woochimp_groups_widget'], $custom_fields, $user_id, $double_optin);
 
             // Subscribe successfully
             if ($result === true) {
@@ -5046,6 +5285,150 @@ if (!class_exists('WooChimp')) {
                 }
 
                 return apply_filters('woocommerce_order_is_paid', $has_paid_status, $order);
+            }
+        }
+
+        /**
+         * Setup the log if it's enabled
+         *
+         * @access public
+         * @return void
+         */
+        public function log_setup()
+        {
+            // Get options
+            $log = $this->opt['woochimp_enable_log'] == 1 ? $this->opt['woochimp_log_events'] : false;
+
+            // Log is enabled
+            if ($log !== false && !isset($this->logger)) {
+
+                // Set logger object
+                $this->logger = new WC_Logger();
+
+                // Set type
+                $this->log_type = $log;
+
+                // Maybe migrate old log
+                $this->log_migrate();
+            }
+        }
+
+        /**
+         * Add log entry
+         *
+         * @access public
+         * @return void
+         */
+        public function log_add($entry)
+        {
+            if (isset($this->logger)) {
+
+                // Save string
+                if (!is_array($entry)) {
+                    $this->logger->add('woochimp_log', $entry);
+                }
+
+                // Save array
+                else {
+                    $this->logger->add('woochimp_log', print_r($entry, true));
+                }
+            }
+        }
+
+        /**
+         * Add log entries from exception
+         *
+         * @access public
+         * @param exception $e
+         * @return void
+         */
+        public function log_process_exception($e)
+        {
+            // Get message
+            $message = $e->getMessage();
+
+            // Try to decode the message
+            $message_decoded = maybe_unserialize($message);
+
+            // Log simple message
+            if (is_string($message_decoded)) {
+                $this->log_add($message);
+            }
+
+            // Log additional data
+            else {
+
+                $this->log_add(__('REQUEST: ', 'woochimp') . $message_decoded['request_to']);
+
+                if (!empty($message_decoded['request'])) {
+                    $this->log_add($message_decoded['request']);
+                }
+
+                $this->log_add(__('RESPONSE: ', 'woochimp') . $message_decoded['message']);
+
+                if (!empty($message_decoded['response'])) {
+                    $this->log_add($message_decoded['response']);
+                }
+            }
+        }
+
+        /**
+         * Add log entries from regular call data
+         *
+         * @access public
+         * @param array $params
+         * @param array $result
+         * @return void
+         */
+        public function log_process_regular_data($params, $result)
+        {
+            // Check if logging of normal requests is enabled
+            if ($this->log_type == 'all') {
+
+                $this->log_add(__('REQUEST PARAMS: ', 'woochimp'));
+                $this->log_add($params);
+
+                $this->log_add(__('RESPONSE:', 'woochimp'));
+                $this->log_add($result);
+            }
+        }
+
+        /**
+         * Migrate and unset the old log
+         *
+         * @access public
+         * @return void
+         */
+        public function log_migrate()
+        {
+            // Get existing value
+            $woochimp_log = get_option('woochimp_log');
+
+            // Already migrated
+            if ($woochimp_log === false) {
+                return;
+            }
+
+            // Migrate
+            $this->logger->add('woochimp_log', __('OLD LOG START', 'woochimp'));
+            $this->logger->add('woochimp_log', print_r($woochimp_log, true));
+            $this->logger->add('woochimp_log', __('OLD LOG END', 'woochimp'));
+
+            // Delete option
+            delete_option('woochimp_log');
+        }
+
+        /**
+         * Erase the log
+         * TBD - use somewhere
+         *
+         * @access public
+         * @return void
+         */
+        private function log_erase()
+        {
+            if (isset($this->logger)) {
+                $this->logger->clear('woochimp_log');
             }
         }
 

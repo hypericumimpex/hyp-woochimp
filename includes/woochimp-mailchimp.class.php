@@ -27,7 +27,7 @@ if (!class_exists('WooChimp_Mailchimp')) {
          * @param string $apikey
          * @return void
          */
-        public function __construct($apikey, $log = false) {
+        public function __construct($apikey) {
 
             // Set up API Key
             if (!$apikey) {
@@ -49,19 +49,6 @@ if (!class_exists('WooChimp_Mailchimp')) {
 
             $this->root = str_replace('https://api', 'https://' . $dc . '.api', $this->root);
             $this->root = rtrim($this->root, '/') . '/';
-
-            // Maybe activate log
-            if ($log !== false) {
-
-                // Set logger object
-                $this->logger = new WC_Logger();
-
-                // Set type
-                $this->log_type = $log;
-
-                // Maybe migrate old log
-                $this->log_migrate();
-            }
 
             // Initialize Curl
             $this->ch = curl_init();
@@ -111,12 +98,16 @@ if (!class_exists('WooChimp_Mailchimp')) {
 
             switch ($http_verb) {
                 case 'post':
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
                     curl_setopt($ch, CURLOPT_POST, true);
                     curl_setopt($ch, CURLOPT_POSTFIELDS, $params_encoded);
                     break;
 
                 case 'get':
+                    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
                     curl_setopt($ch, CURLOPT_URL, $request_url . $params_query);
+                    curl_setopt($ch, CURLOPT_POST, false);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, false);
                     break;
 
                 case 'delete':
@@ -152,41 +143,33 @@ if (!class_exists('WooChimp_Mailchimp')) {
             // Check for errors
             $response_error = (floor($info['http_code'] / 100) >= 4) ? true : false;
 
-            // Write to log
-            if (isset($this->logger)) {
-
-                $error = ($response_error || $curl_error) ? true : false;
-
-                if ($this->log_type == 'all' || ($error && $this->log_type == 'errors')) {
-
-                    $this->log_add(__('REQUEST: ', 'woochimp') . $http_verb . ' ' . $url);
-
-                    if (!empty($params)) {
-                        $this->log_add($params);
-                    }
-
-                    $this->log_add(__('RESPONSE', 'woochimp') . ($error ? (' - ' . __('ERROR RECEIVED', 'woochimp')) : '') . ':');
-
-                    if ($curl_error !== false) {
-                        $this->log_add($curl_error);
-                    }
-                    else {
-                        $this->log_add($result);
-                    }
-                }
-            }
+            // Prepare the data
+            $call_data = array(
+              'message'    => '',
+              'request_to' => $http_verb . ' ' . $url,
+              'request'    => $params,
+              'response'   => $result,
+            );
 
             // Process the errors
             if ($curl_error !== false) {
-                throw new Exception($curl_error);
+
+                // cURL error message
+                $call_data['message'] = $curl_error;
+                throw new Exception(maybe_serialize($call_data));
             }
             else if ($response_error === true) {
 
                 if (!isset($result['status'])) {
-                    throw new Exception('We received an unexpected error: ' . json_encode($result));
+
+                    // Unknown error without a status
+                    $call_data['message'] = __('We received an unexpected error', 'woochimp');
+                    throw new Exception(maybe_serialize($call_data));
                 }
 
-                throw new Exception($result['title'] . '(' . $result['status'] . '): ' . $result['detail'] . (isset($result['errors']) ? ' ' . maybe_serialize($result['errors']) : ''));
+                // Regular error
+                $call_data['message'] = $result['title'] . '(' . $result['status'] . ')';
+                throw new Exception(maybe_serialize($call_data));
             }
 
             return $result;
@@ -487,96 +470,37 @@ if (!class_exists('WooChimp_Mailchimp')) {
          */
         private function remove_links_in_response($result)
         {
-            $result_changed = $result;
+            if (is_array($result)) {
 
-            // Sometimes links are in root
-            if (isset($result_changed['_links'])) {
-                unset($result_changed['_links']);
-            }
+                // Sometimes links are in root
+                if (isset($result['_links'])) {
+                    unset($result['_links']);
+                }
 
-            // main_key is 'lists', 'merge_fields' or 'total_items'
-            foreach ($result as $main_key => $main_array) {
+                // main_key is 'lists', 'merge_fields' or 'total_items'
+                foreach ($result as $main_key => $main_array) {
 
-                // Check is it's array of items, not plain field (like 'total_items')
-                if (is_array($main_array)) {
+                    // Check is it's array of items, not plain field (like 'total_items')
+                    if (is_array($main_array)) {
 
-                    // Could be here
-                    if (isset($main_array['_links'])) {
-                        unset($result_changed[$main_key]['_links']);
-                    }
+                        // Could be here
+                        if (isset($main_array['_links'])) {
+                            unset($result[$main_key]['_links']);
+                        }
 
-                    // [0] => array of lists/interests/etc
-                    foreach ($main_array as $key => $item_array) {
+                        // [0] => array of lists/interests/etc
+                        foreach ($main_array as $item_key => $item_array) {
 
-                        // Each item can have links array
-                        if (isset($item_array['_links'])) {
-                            unset($result_changed[$main_key][$key]['_links']);
+                            // Each item can have links array
+                            if (is_array($item_array) && isset($item_array['_links'])) {
+                                unset($result[$main_key][$item_key]['_links']);
+                            }
                         }
                     }
                 }
             }
 
-            return $result_changed;
-        }
-
-        /**
-         * Add log entry
-         *
-         * @access public
-         * @return void
-         */
-        public function log_add($entry)
-        {
-            if (isset($this->logger)) {
-
-                // Save string
-                if (!is_array($entry)) {
-                    $this->logger->add('woochimp_log', $entry);
-                }
-
-                // Save array
-                else {
-                    $this->logger->add('woochimp_log', print_r($entry, true));
-                }
-            }
-        }
-
-        /**
-         * Migrate and unset old log
-         *
-         * @access public
-         * @return void
-         */
-        public function log_migrate()
-        {
-            // Get existing value
-            $woochimp_log = get_option('woochimp_log');
-
-            // Already migrated
-            if ($woochimp_log === false) {
-                return;
-            }
-
-            // Migrate
-            $this->logger->add('woochimp_log', __('OLD LOG START', 'woochimp'));
-            $this->logger->add('woochimp_log', print_r($woochimp_log, true));
-            $this->logger->add('woochimp_log', __('OLD LOG END', 'woochimp'));
-
-            // Delete option
-            delete_option('woochimp_log');
-        }
-
-        /**
-         * Erase log
-         *
-         * @access public
-         * @return void
-         */
-        private function log_erase()
-        {
-            if (isset($this->logger)) {
-                $this->logger->clear('woochimp_log');
-            }
+            return $result;
         }
 
     }
